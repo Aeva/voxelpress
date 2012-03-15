@@ -1,0 +1,1 @@
+valac --pkg gee-1.0 -g --pkg gio-2.0 --save-temps voxelcore/IVectorModel.vala voxelcore/ObjModel.vala voxelcore/voxelcore.vala -o voxelpress
