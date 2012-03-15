@@ -6,17 +6,17 @@ using Gee;
 namespace voxelcore {
 	public class ObjModel : GLib.Object, IVectorModel {
 		private File file {get; set;}
-		private ArrayList<Vector> vertex_buffer {get; set;}
-		private ArrayList<Vector> normal_buffer {get; set;}
+		private ArrayList<Vector?> vertex_buffer {get; set;}
+		private ArrayList<Vector?> normal_buffer {get; set;}
 		public bool exists { 
 			get {
 				return file.query_exists();
 			}
 		}
-		public HashSet<Face> faces {get; set;}
+		public HashSet<Face?> faces {get; set;}
 
 		public ObjModel(string path) throws IOError, VectorModelError {
-			faces = new HashSet<Face>();
+			faces = new HashSet<Face?>();
 			file = File.new_for_path(path);
 			
 			if (exists) {
@@ -29,8 +29,8 @@ namespace voxelcore {
 		}
 
 		private void clear_buffers() {
-			vertex_buffer = new ArrayList<Vector>();
-			normal_buffer = new ArrayList<Vector>();
+			vertex_buffer = new ArrayList<Vector?>();
+			normal_buffer = new ArrayList<Vector?>();
 		}
 
 		private Vector parse_vector(string line) {
@@ -75,7 +75,7 @@ namespace voxelcore {
 					line = IN.read_line(null);
 				}
 			} catch (Error e) {
-				// FIXME handle it or something
+				throw new VectorModelError.PARSER_FAILURE("Parser quit with an error.");
 			}
 			clear_buffers();
 			if (faces.size == 0) {
