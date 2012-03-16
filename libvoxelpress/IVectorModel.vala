@@ -1,10 +1,6 @@
 
-using Gee;
 
-
-
-
-namespace voxelcore {
+namespace libvoxelpress {
 
 
 	public errordomain VectorModelError {
