@@ -36,8 +36,6 @@ namespace voxelcore {
 			return 0;
 		}
 		else {
-			// test out obj loading code
-			bs_function();
 			try {
 				IVectorModel model = new ObjModel(args[1]);
 				do_something_neat(model);

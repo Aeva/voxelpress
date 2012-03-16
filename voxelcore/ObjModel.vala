@@ -1,6 +1,6 @@
 using Gee;
-
-
+using libvoxelpress;
+using libvoxelpress.plugins;
 
 
 namespace voxelcore {
@@ -22,7 +22,7 @@ namespace voxelcore {
 			file = File.new_for_path(path);
 			
 			if (exists) {
-				load();
+				parse();
 			}
 			else {
 				//throw new IOError("File does not exist.");
@@ -40,7 +40,7 @@ namespace voxelcore {
 			return vec;
 		}
 
-		private void load() throws IOError, VectorModelError {
+		private void parse() throws IOError, VectorModelError {
 			try {
 				var IN = new DataInputStream(file.read());
 				string line = IN.read_line(null);

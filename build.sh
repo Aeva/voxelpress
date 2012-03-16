@@ -5,7 +5,7 @@ cd bin
 mkdir plugins
 mkdir backends
 # compile libvoxelpress
-valac --library=libvoxelpress -H libvoxelpress.h ../libvoxelpress/IVectorModel.vala -X -fPIC -X -shared -o libvoxelpress.so
+valac --pkg gee-1.0 --library=libvoxelpress -H libvoxelpress.h ../libvoxelpress/IVectorModel.vala ../libvoxelpress/plugins.vala -X -fPIC -X -shared -o libvoxelpress.so
 # compile voxelcore
 valac --pkg gee-1.0 --pkg gio-2.0 libvoxelpress.vapi ../voxelcore/ObjModel.vala ../voxelcore/voxelcore.vala -X libvoxelpress.so -X -I. -o voxelpress
 
