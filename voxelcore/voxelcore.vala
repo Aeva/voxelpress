@@ -1,4 +1,4 @@
-
+using libvoxelpress;
 
 namespace voxelcore {
 
@@ -30,12 +30,14 @@ namespace voxelcore {
 	}
 
 	int main (string[] args) {
+		// FIXME use stuff like Glib.OptionContext for parsing options.
 		if (args.length == 1) {
 			stdout.printf("No input files;  nothing done.\n");
 			return 0;
 		}
 		else {
 			// test out obj loading code
+			bs_function();
 			try {
 				IVectorModel model = new ObjModel(args[1]);
 				do_something_neat(model);
