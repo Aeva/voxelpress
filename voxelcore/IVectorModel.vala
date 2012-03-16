@@ -24,12 +24,10 @@ namespace voxelcore {
 
 
 	public interface IVectorModel : GLib.Object {
-		public abstract HashSet<Face> faces {get; set;}
+		public abstract LinkedList<Face?> faces {get; set;}
 		public abstract bool exists {get;}
 		public void add (IVectorModel model) {
-			foreach (Face f in model.faces) {
-				faces.add(f);
-			}
+			faces.insert_all(0, model.faces);
 		}
 	}
 }
