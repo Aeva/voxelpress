@@ -1,4 +1,4 @@
-using libvoxelpress;
+using libvoxelpress.vectors;
 
 namespace voxelcore {
 
@@ -32,13 +32,24 @@ namespace voxelcore {
 	*/
 
 	int main (string[] args) {
+		try {
+			assert(Module.supported());
+		} catch (Error e) {
+			stdout.printf("Module loading not supported? o_O\n");
+			return 1;
+		}
+		string executable = Filename.display_basename(args[0]);
+		string plugins_path = args[0][0:-1*executable.length] + "plugins";
+		var plugins = new PluginRepository(plugins_path);
+		
+
 		// FIXME use stuff like Glib.OptionContext for parsing options.
 		if (args.length == 1) {
 			stdout.printf("No input files;  nothing done.\n");
 			return 0;
 		}
 		else {
-			IVectorModel model;
+			VectorModel model;
 			try {
 				// import phase
 				//model = new ObjModel(args[1]);

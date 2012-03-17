@@ -1,7 +1,7 @@
 using Gee;
 
 
-namespace libvoxelpress {
+namespace libvoxelpress.vectors {
 	public errordomain VectorModelError {
 		PARSER_FAILURE
 	}
@@ -18,9 +18,9 @@ namespace libvoxelpress {
 	}
 
 
-	public interface IVectorModel : GLib.Object {
+	public interface VectorModel : GLib.Object {
 		public abstract LinkedList<Face?> faces {get; set;}
-		public void add (IVectorModel model) {
+		public void add (VectorModel model) {
 			faces.insert_all(0, model.faces);
 		}
 	}
