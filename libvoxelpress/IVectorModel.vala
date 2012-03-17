@@ -2,8 +2,6 @@ using Gee;
 
 
 namespace libvoxelpress {
-
-
 	public errordomain VectorModelError {
 		PARSER_FAILURE
 	}
@@ -22,7 +20,6 @@ namespace libvoxelpress {
 
 	public interface IVectorModel : GLib.Object {
 		public abstract LinkedList<Face?> faces {get; set;}
-		public abstract bool exists {get;}
 		public void add (IVectorModel model) {
 			faces.insert_all(0, model.faces);
 		}

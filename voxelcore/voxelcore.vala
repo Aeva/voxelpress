@@ -2,6 +2,7 @@ using libvoxelpress;
 
 namespace voxelcore {
 
+	/*
 	private void print_vector (Vector vector) {
 		double a = vector.vector[0];
 		double b = vector.vector[1];
@@ -28,6 +29,7 @@ namespace voxelcore {
 		stdout.printf(@"The model contains $face_count faces!!!!\n");
 		print_face(model.faces[0]);
 	}
+	*/
 
 	int main (string[] args) {
 		// FIXME use stuff like Glib.OptionContext for parsing options.
@@ -36,14 +38,22 @@ namespace voxelcore {
 			return 0;
 		}
 		else {
+			IVectorModel model;
 			try {
-				IVectorModel model = new ObjModel(args[1]);
-				do_something_neat(model);
+				// import phase
+				//model = new ObjModel(args[1]);
+
 			} catch (IOError err) {
 				stdout.printf("An IO error occured =(\n");
+				return 1;
 			} catch (VectorModelError err) {
 				stdout.printf("A Vector model error occured =(\n");
+				return 1;
 			}
+
+			// vector phase
+			
+			
 		}
 		return 0;
 	}

@@ -4,31 +4,30 @@ using libvoxelpress.plugins;
 
 
 namespace voxelcore {
+
 	public class ObjModel : GLib.Object, IVectorModel {
-		private File file {get; set;}
 		// Circumstantial use of two different list types to hopefully
 		// speed things up a bit for sufficiently large models.
 		private Vector[] vertex_array = {};
 		private Vector[] normal_array = {};
-		public bool exists { 
-			get {
-				return file.query_exists();
-			}
-		}
 		public LinkedList<Face?> faces {get; set;}
-
-		public ObjModel(string path) throws IOError, VectorModelError {
+		
+		
+		public ObjModel(string path)  {
 			faces = new LinkedList<Face?>();
-			file = File.new_for_path(path);
-			
-			if (exists) {
-				parse();
+		}
+		
+		public void load(string path) throws IOError, VectorModelError {
+			var file = File.new_for_path(path);
+		
+			if (file.query_exists()) {
+				parse(file);
 			}
 			else {
 				//throw new IOError("File does not exist.");
 			}
 		}
-
+		
 		private Vector parse_vector(string line) {
 			var parts = line.split(" ");
 			Vector vec = Vector();
@@ -39,8 +38,8 @@ namespace voxelcore {
 			};
 			return vec;
 		}
-
-		private void parse() throws IOError, VectorModelError {
+		
+		private void parse(File file) throws IOError, VectorModelError {
 			try {
 				var IN = new DataInputStream(file.read());
 				string line = IN.read_line(null);
@@ -67,10 +66,10 @@ namespace voxelcore {
 						}
 						faces.add(face);
 					}
-
+					
 					line = IN.read_line(null);
 				}
-
+				
 			} catch (Error e) {
 				throw new VectorModelError.PARSER_FAILURE("Parser quit with an error.");
 			}
