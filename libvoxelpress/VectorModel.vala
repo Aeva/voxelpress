@@ -20,6 +20,7 @@ namespace libvoxelpress.vectors {
 
 	public interface VectorModel : GLib.Object {
 		public abstract LinkedList<Face?> faces {get; set;}
+		public abstract void load(string path) throws IOError, VectorModelError;
 		public void add (VectorModel model) {
 			faces.insert_all(0, model.faces);
 		}

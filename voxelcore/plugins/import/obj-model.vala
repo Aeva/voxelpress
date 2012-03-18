@@ -3,7 +3,7 @@ using libvoxelpress.vectors;
 using libvoxelpress.plugins;
 
 
-public class ObjModel : GLib.Object, BasicPlugin, VectorModel, ImportPlugin {
+public class ObjModel : GLib.Object, VectorModel, ImportPlugin {
 	// Circumstantial use of two different list types to hopefully
 	// speed things up a bit for sufficiently large models.
 	private Vector[] vertex_array = {};
@@ -80,12 +80,11 @@ public class ObjModel : GLib.Object, BasicPlugin, VectorModel, ImportPlugin {
 }
 
 
-public PluginMetaData register_plugin (Module module) {
-	PluginMetaData meta_data = {
-		".obj model",
-		1,
-		PluginKind.IMPORT,
-		typeof (ObjModel)
-	};
-	return meta_data;
+public ImportMetaData register_plugin (Module module) {
+	var info = new ImportMetaData();
+	info.object_type = typeof (ObjModel);
+	info.name = "obj import";
+	info.extensions = {".obj"};
+
+	return info;
 }
