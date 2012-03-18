@@ -14,7 +14,7 @@ namespace voxelcore {
 
 		public void feed (string path) {
 			// FIXME intelligently guess the correct loader, instead of doing this:
-			VectorModel? model = null;;
+			VectorModel? model = null;
 			foreach (var plugin in repository.plugins) {
 				model = plugin.create_new();
 				try {

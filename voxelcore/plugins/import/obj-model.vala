@@ -9,12 +9,9 @@ public class ObjModel : GLib.Object, VectorModel, ImportPlugin {
 	private Vector[] vertex_array = {};
 	private Vector[] normal_array = {};
 	public LinkedList<Face?> faces {get; set;}
-	
-	public ObjModel()  {
-		faces = new LinkedList<Face?>();
-	}
 
-	public void derp() {
+	construct {
+		faces = new LinkedList<Face?>();
 	}
 	
 	public void load(string path) throws IOError, VectorModelError {
