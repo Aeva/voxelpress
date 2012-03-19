@@ -7,12 +7,16 @@ namespace voxelcore {
 	public class VectorStage: GLib.Object {
 		public PluginRepository<VectorPlugin> repository {get; private set;}
 		public ArrayList<VectorPlugin> pipeline {get; private set;}
-		private ThreadPool<Face> thread_pool;
+		private ThreadPool<Face?> thread_pool;
 		
 		public VectorStage (string search_path) {
 			repository = new PluginRepository<VectorPlugin> (search_path + "/vector");
 			pipeline = new ArrayList<VectorPlugin>();
-			thread_pool = new ThreadPool<Face>((Func<Face>)this.worker, 4, false);
+			try {
+				thread_pool = new ThreadPool<work_reciept?>((Func<work_reciept?>)this.worker, 4, false);
+			} catch (ThreadError e) {
+				stdout.printf("Failed to create thread pool.\n");
+			}
 
 			// FIXME: Sort plugins by priority, and ignore explicit plugins when appropriate.
 			// FIXME: Add "fragmentation" stuff to the end of each pipeline.
@@ -21,24 +25,36 @@ namespace voxelcore {
 			}
 		}
 
-		private void* worker (Face face) {
-			foreach (VectorPlugin stage in pipeline) {
-				try {
-					stage.transform(face);
-				} catch (Error e) {
-					// FIXME handle discard events
+		private struct work_reciept {
+			public ArrayList<VectorPlugin> pipeline;
+			public Face? face;
+		}
+
+		private void worker (work_reciept? work) {
+			if (work !=null && work.face != null && work.pipeline != null) {
+				stdout.printf("crashes here\n");
+				foreach (VectorPlugin stage in work.pipeline) {
+					try {
+						stage.transform(work.face);
+					} catch (VectorModelError e) {
+						// FIXME do something useful here
+					}
 				}
 			}
 		}
 
 		public void feed (VectorModel model) {
-			try {
-
-				foreach (Face face in model.faces) {
+			foreach (Face face in model.faces) {
+				var stub = work_reciept {
+					this.pipeline,
+					face
+				};
+				try {
+					thread_pool.push(stub);
+				} catch (ThreadError e) {
+					// FIXME do something useful
+					stdout.printf("Some thread error happenend while running the vector stage.\n");
 				}
-			} catch (Error e) {
-				// FIXME be more specific...
-				stdout.print("Error occured in vector stage.\n");
 			}
 		}
 	}
