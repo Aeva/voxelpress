@@ -17,12 +17,21 @@ namespace libvoxelpress.plugins {
 	}
 
 
+	public class VectorMetaData : GLib.Object, PluginMetaData {
+		public Type object_type {get; set;}
+		public string name {get; set;}
+		public int priority {get; set; default=90;}
+		public bool explicit {get; set; default=false;}
+		// FIXME property for a json string containing commandline args?
+	}
+
+
     public interface ImportPlugin : VectorModel {
         public abstract void load(string path) throws IOError, VectorModelError;
     }
 
 
     public interface VectorPlugin : GLib.Object {
-        public abstract void transform(Face face);
+        public abstract void transform(Face face) throws VectorModelError;
     }
 }

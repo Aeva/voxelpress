@@ -1,6 +1,6 @@
 using libvoxelpress.vectors;
 
-namespace voxelcore.debug {
+namespace libvoxelpress.debug {
     private void print_vector (Vector vector) {
         double a = vector.vector[0];
         double b = vector.vector[1];
@@ -21,10 +21,8 @@ namespace voxelcore.debug {
         stdout.printf("\n");
     }
 
-    private void do_something_neat(VectorModel model) {
-        stdout.printf("Opened a model!\n");
+    private void print_face_count (VectorModel model) {
         var face_count = model.faces.size; 
         stdout.printf(@"The model contains $face_count faces!!!!\n");
-        print_face(model.faces[0]);
     }
 }

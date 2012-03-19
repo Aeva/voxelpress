@@ -20,8 +20,9 @@ namespace voxelcore {
 		else {
 			// Configure the pipeline
 			var import_stage = new ImportStage(plugins_path);
+			var vector_stage = new VectorStage(plugins_path);		
+			import_stage.next = vector_stage;
 	   
-		
 			try {
 				// Attempt to start this stuff up!
 				import_stage.feed(args[1]);

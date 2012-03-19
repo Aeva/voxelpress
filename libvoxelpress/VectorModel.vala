@@ -3,7 +3,8 @@ using Gee;
 
 namespace libvoxelpress.vectors {
 	public errordomain VectorModelError {
-		PARSER_FAILURE
+		PARSER_FAILURE,
+		DISCARD_FACE
 	}
 
 

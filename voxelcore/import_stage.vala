@@ -1,12 +1,12 @@
 using Gee;
 using libvoxelpress.plugins;
 using libvoxelpress.vectors;
-using voxelcore.debug;
 
 
 namespace voxelcore {
 	public class ImportStage: GLib.Object {
 		public PluginRepository<ImportPlugin> repository {get; private set;}
+		public VectorStage? next {get; set;}
 
 		public ImportStage (string search_path) {
 			repository = new PluginRepository<ImportPlugin> (search_path + "/import");
@@ -25,8 +25,8 @@ namespace voxelcore {
 				break;
 			}
 			// FIXME pass model along to vector stage
-			if (model != null) {
-				do_something_neat(model);
+			if (model != null && next != null) {
+				next.feed(model);
 			}
 		}
 	}
