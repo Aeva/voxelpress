@@ -9,6 +9,12 @@ namespace voxelcore {
 			stdout.printf("Module loading not supported? o_O\n");
 			return 1;
 		}
+		try {
+			assert(Thread.supported());
+		} catch (Error e) {
+			stdout.printf("Threading is not supported on this system? o_O\n");
+			return 1;
+		}
 		string executable = Filename.display_basename(args[0]);
 		string plugins_path = args[0][0:-1*executable.length] + "plugins";
 	   
