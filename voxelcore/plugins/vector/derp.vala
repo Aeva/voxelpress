@@ -1,11 +1,12 @@
 using Gee;
 using libvoxelpress.vectors;
 using libvoxelpress.plugins;
+using libvoxelpress.debug;
 
 
 public class DerpAdjustment : GLib.Object, VectorPlugin {
 	public void transform (Face face) throws VectorModelError {
-		stdout.printf("Derp :)\n");
+		print_face(face);
 	}
 }
 

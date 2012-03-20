@@ -9,10 +9,22 @@ namespace voxelcore {
     private class VectorThread {
         public static ArrayList<VectorPlugin> pipeline;
         public Face face;
-        public VectorThread(Face face) {
-            this.face = face;
-        }
     }
+
+
+	private void worker_func (VectorThread work) {
+		if (work.face == null) {
+			stdout.printf("thread crapped the bed\n");
+			return;
+		}
+		foreach (VectorPlugin stage in work.pipeline) {
+			try {
+				//stage.transform(work.face);				
+			} catch (VectorModelError e) {
+				// FIXME do something useful here
+			}
+		}
+	}
 
 
     public class VectorStage: GLib.Object {
@@ -27,7 +39,7 @@ namespace voxelcore {
             repository = new PluginRepository<VectorPlugin> (search_path + "/vector");
             pipeline = new ArrayList<VectorPlugin>();
             try {
-                thread_pool = new ThreadPool<VectorThread>((Func<VectorThread>)this.worker, 4, false);
+                thread_pool = new ThreadPool<VectorThread>((Func<VectorThread>)worker_func, 4, true);
             } catch (ThreadError e) {
                 stdout.printf("Failed to create thread pool.\n");
             }
@@ -37,24 +49,16 @@ namespace voxelcore {
             foreach (var plugin in repository.plugins) {
                 pipeline.add(plugin.create_new());
             }
-        }
-
-        private void worker (VectorThread work) {
-			foreach (VectorPlugin stage in work.pipeline) {
-				try {
-					stage.transform(work.face);
-				} catch (VectorModelError e) {
-					// FIXME do something useful here
-				}
-			}
+			//while (thread_pool.get_num_threads() > 0) {
+			//}
         }
 
         public void feed (VectorModel model) {
             foreach (Face face in model.faces) {
-                var stub = new VectorThread(face);
-
                 try {
-                    thread_pool.push(stub);
+					var worker = new VectorThread();
+					worker.face = face;
+                    thread_pool.push(worker);
                 } catch (ThreadError e) {
                     // FIXME do something useful
                     stdout.printf("Some thread error happenend while running the vector stage.\n");

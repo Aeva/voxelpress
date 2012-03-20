@@ -8,14 +8,14 @@ namespace libvoxelpress.vectors {
 	}
 
 
-	public struct Vector {
-		public double[] vector;
+	public class Vector : GLib.Object {
+		public double[] vector = new double[] { 0, 0, 0 };
 	}
 
 
-	public struct Face {
-		public Vector[] vertices;
-		public Vector[] normals;
+	public class Face : GLib.Object {
+		public Vector[] vertices = new Vector[] { new Vector(), new Vector(), new Vector() };
+		public Vector[] normals = new Vector[] { new Vector(), new Vector(), new Vector() };
 	}
 
 

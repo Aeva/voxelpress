@@ -27,7 +27,7 @@ public class ObjModel : GLib.Object, VectorModel, ImportPlugin {
 	
 	private Vector parse_vector(string line) {
 		var parts = line.split(" ");
-		Vector vec = Vector();
+		Vector vec = new Vector();
 		vec.vector = { 
 			double.parse(parts[1]),
 			double.parse(parts[2]),
@@ -52,9 +52,7 @@ public class ObjModel : GLib.Object, VectorModel, ImportPlugin {
 				}
 				if (line.has_prefix("f ")) {
 					// FIXME break down quads into triangles.
-					var face = Face();
-					face.vertices = new Vector[3];
-					face.normals = new Vector[3];
+					var face = new Face();
 					var parts = line.split(" ");
 					for (int i=0; i<3; i+=1) {
 						var bits = parts[1+i].split("/");
