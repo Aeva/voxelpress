@@ -22,6 +22,7 @@ public class ObjModel : GLib.Object, VectorModel, ImportPlugin {
 		}
 		else {
 			//throw new IOError("File does not exist.");
+			stdout.printf("File does not exist...?\n");
 		}
 	}
 	

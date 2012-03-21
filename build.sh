@@ -40,7 +40,7 @@ rm derp.c
 
 # for testing, I guess
 cd ..
-echo "cd bin; LD_LIBRARY_PATH=. ./voxelpress \$@" >> test_voxelpress.sh
+echo "cd bin; LD_LIBRARY_PATH=. ./voxelpress "../"\$@" >> test_voxelpress.sh
 chmod +x test_voxelpress.sh
 
 # wrap up?
