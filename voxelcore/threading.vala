@@ -30,6 +30,7 @@ namespace voxelcore {
 			}
 			for (int i=0; i<thread_count; i+=1) {
 				unowned Thread<void*> foo = Thread.create<void*>(run_thread, true);
+				foo.set_priority(ThreadPriority.HIGH); // make it count!
 				pool[i] = new ThreadTracker(foo);
 			}
 		}
@@ -54,18 +55,24 @@ namespace voxelcore {
 		
 		public void* run_thread () {
 			// Wait until start has been called:
+			unowned Thread<void*> current_thread = Thread.self<void*>();
 			mutex.lock();
 			mutex.unlock();
 			
 			while (true) {
-				SomeType? datum = vector_queue.try_pop();
+				var wait = TimeVal();
+				wait.add(1000);
+				SomeType? datum = vector_queue.timed_pop(ref wait);
+				//current_thread.set_priority(ThreadPriority.HIGH);
 				if (datum == null) {
 					// queue was empty
 					if (dry_up) {
 						break;
 					}
 					else {
-						Thread.usleep(100);
+						//current_thread.set_priority(ThreadPriority.LOW);
+						//stdout.printf("thread stalled\n");
+						Thread.yield();
 						continue;
 					}
 				}

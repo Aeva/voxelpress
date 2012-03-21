@@ -11,12 +11,14 @@ namespace voxelcore {
 		private WorkerPool<Face> thread_pool {get; set;}
         public PluginRepository<VectorPlugin> repository {get; private set;}
         public ArrayList<VectorPlugin> pipeline {get; set;}
+		private bool started;
+		private bool active;
 
         public VectorStage (string search_path) {
             repository = new PluginRepository<VectorPlugin> (search_path + "/vector");
             pipeline = new ArrayList<VectorPlugin>();
             try {
-				thread_pool = new WorkerPool<Face> (4, true);
+				thread_pool = new WorkerPool<Face> (2, true);
             } catch (ThreadError e) {
                 stdout.printf("Failed to create thread pool.\n");
             }
@@ -27,14 +29,22 @@ namespace voxelcore {
                 pipeline.add(plugin.create_new());
             }
 			thread_pool.event_hook.connect(worker_func);
-			thread_pool.start();
+			started = false;
+			active = false;
         }
 
 		public void join () {
-			thread_pool.join_all();
+			if (active) {
+				active = false;
+				thread_pool.join_all();
+			}
 		}
 
 		public void feed (VectorModel model) {
+			if (!started) {
+				thread_pool.start();
+				active = true;
+			}
 			for (int i=0; i<3; i+=1) {
 				stdout.printf(" - ");
 				print_vector(model.faces[0].vertices[i]);

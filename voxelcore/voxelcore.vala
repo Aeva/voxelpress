@@ -28,11 +28,18 @@ namespace voxelcore {
 			var import_stage = new ImportStage(plugins_path);
 			var vector_stage = new VectorStage(plugins_path);		
 			import_stage.next = vector_stage;
+
+			unowned Thread<void*> current_thread = Thread.self<void*>();
+			current_thread.set_priority(ThreadPriority.URGENT);
 	   
 			try {
 				// Attempt to start this stuff up!
+				var benchmark = new Timer();
+				benchmark.start();
 				import_stage.feed(args[1]);
 				//vector_stage.join();
+				benchmark.stop();
+				stdout.printf(" - Execution time: %s seconds\n", benchmark.elapsed(null).to_string());
 			} catch (IOError err) {
 				stdout.printf("An IO error occured =(\n");
 				return 1;
