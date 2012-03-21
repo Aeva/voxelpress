@@ -1,6 +1,7 @@
 using Gee;
 using libvoxelpress.plugins;
 using libvoxelpress.vectors;
+using libvoxelpress.debug;
 
 
 
@@ -47,7 +48,18 @@ namespace voxelcore {
 		private void worker_func (Face face) {
 			foreach (VectorPlugin stage in pipeline) {
 				try {
+					int id = Random.int_range(10,99);
+					for (int i=0; i<3; i+=1) {
+						stdout.printf(@" - $id-$i ");
+						print_vector(face.vertices[i]);
+						stdout.printf("\n");
+					}
 					stage.transform(face);
+					for (int i=0; i<3; i+=1) {
+						stdout.printf(@" + $id-$i ");
+						print_vector(face.vertices[i]);
+						stdout.printf("\n");
+					}
 				} catch (VectorModelError e) {
 					// FIXME do something useful here
 				}

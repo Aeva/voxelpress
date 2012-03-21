@@ -1,19 +1,12 @@
 using Gee;
 using libvoxelpress.vectors;
 using libvoxelpress.plugins;
-using libvoxelpress.debug;
 
 
 public class DerpAdjustment : GLib.Object, VectorPlugin {
 	public void transform (Face face) throws VectorModelError {
 		for (int i=0; i<3; i+=1) {
-			stdout.printf(" - ");
-			print_vector(face.vertices[i]);
-			stdout.printf("\n");
 			face.vertices[i] = x_skew(face.vertices[0], 4);
-			stdout.printf(" + ");
-			print_vector(face.vertices[i]);
-			stdout.printf("\n");
 		}
 	}
 }
