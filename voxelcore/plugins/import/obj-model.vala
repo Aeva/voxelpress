@@ -6,8 +6,8 @@ using libvoxelpress.plugins;
 public class ObjModel : GLib.Object, VectorModel, ImportPlugin {
 	// Circumstantial use of two different list types to hopefully
 	// speed things up a bit for sufficiently large models.
-	private Vector[] vertex_array = {};
-	private Vector[] normal_array = {};
+	private Vec3[] vertex_array = {};
+	private Vec3[] normal_array = {};
 	public LinkedList<Face?> faces {get; set;}
 
 	construct {
@@ -25,15 +25,13 @@ public class ObjModel : GLib.Object, VectorModel, ImportPlugin {
 		}
 	}
 	
-	private Vector parse_vector(string line) {
+	private Vec3 parse_vector(string line) {
 		var parts = line.split(" ");
-		Vector vec = new Vector();
-		vec.vector = { 
+		return new Vec3.with_coords (
 			double.parse(parts[1]),
 			double.parse(parts[2]),
 			double.parse(parts[3])
-		};
-		return vec;
+			);
 	}
 	
 	private void parse(File file) throws IOError, VectorModelError {

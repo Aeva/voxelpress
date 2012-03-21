@@ -32,6 +32,7 @@ namespace voxelcore {
 			try {
 				// Attempt to start this stuff up!
 				import_stage.feed(args[1]);
+				vector_stage.join();
 			} catch (IOError err) {
 				stdout.printf("An IO error occured =(\n");
 				return 1;

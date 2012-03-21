@@ -1,10 +1,10 @@
 using libvoxelpress.vectors;
 
 namespace libvoxelpress.debug {
-    public void print_vector (Vector vector) {
-        double a = vector.vector[0];
-        double b = vector.vector[1];
-        double c = vector.vector[2];
+    public void print_vector (Vec3 vector) {
+        double a = vector.data[0];
+        double b = vector.data[1];
+        double c = vector.data[2];
         stdout.printf(@" ( $a, $b, $c )");
     }
 
