@@ -6,20 +6,20 @@ using libvoxelpress.vectors;
 
 
 namespace voxelcore {
-    private class VectorThread {
+    class VectorThread {
         public static ArrayList<VectorPlugin> pipeline;
         public Face face;
     }
 
 
-	private void worker_func (VectorThread work) {
+	void worker_func (VectorThread work) {
 		if (work.face == null) {
 			stdout.printf("thread crapped the bed\n");
 			return;
 		}
 		foreach (VectorPlugin stage in work.pipeline) {
 			try {
-				//stage.transform(work.face);				
+				stage.transform(work.face);				
 			} catch (VectorModelError e) {
 				// FIXME do something useful here
 			}
