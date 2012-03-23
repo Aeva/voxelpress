@@ -20,9 +20,4 @@ namespace libvoxelpress.debug {
         }
         stdout.printf("\n");
     }
-
-    public void print_face_count (VectorModel model) {
-        var face_count = model.faces.size; 
-        stdout.printf(@"The model contains $face_count faces!!!!\n");
-    }
 }

@@ -3,18 +3,13 @@ using libvoxelpress.vectors;
 using libvoxelpress.plugins;
 
 
-public class ObjModel : GLib.Object, VectorModel, ImportPlugin {
+public class ObjModel : VectorModel, ImportPlugin {
 	// Circumstantial use of two different list types to hopefully
 	// speed things up a bit for sufficiently large models.
 	private Vec3[] vertex_array = {};
 	private Vec3[] normal_array = {};
-	public LinkedList<Face?> faces {get; set;}
-
-	construct {
-		faces = new LinkedList<Face?>();
-	}
 	
-	public void load(string path) throws IOError, VectorModelError {
+	public override void load(string path) throws IOError, VectorModelError {
 		var file = File.new_for_path(path);
 		
 		if (file.query_exists()) {
@@ -58,7 +53,8 @@ public class ObjModel : GLib.Object, VectorModel, ImportPlugin {
 						face.vertices[i] = vertex_array[int.parse(bits[0])-1];
 						face.normals[i] = normal_array[int.parse(bits[2])-1];
 					}
-					faces.add(face);
+					faces.push(face);
+					face_count += 1;
 				}
 				
 				line = IN.read_line(null);
@@ -67,7 +63,7 @@ public class ObjModel : GLib.Object, VectorModel, ImportPlugin {
 		} catch (Error e) {
 			throw new VectorModelError.PARSER_FAILURE("Parser quit with an error.");
 		}
-		if (faces.size == 0) {
+		if (face_count == 0) {
 			throw new VectorModelError.PARSER_FAILURE("Parser yielded no faces.");
 		}
 	}

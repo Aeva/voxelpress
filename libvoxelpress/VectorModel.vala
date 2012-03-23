@@ -78,11 +78,9 @@ namespace libvoxelpress.vectors {
 		return basic_skew(coord, skew);
 	}
 
-	public interface VectorModel : GLib.Object {
-		public abstract LinkedList<Face?> faces {get; set;}
+	public abstract class VectorModel : GLib.Object {
+		public static AsyncQueue<Face?> faces { get; set; }
+		public static int face_count = 0;
 		public abstract void load(string path) throws IOError, VectorModelError;
-		public void add (VectorModel model) {
-			faces.insert_all(0, model.faces);
-		}
 	}
 }

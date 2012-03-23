@@ -1,3 +1,6 @@
+using Gee;
+
+
 
 
 namespace voxelcore {
@@ -13,25 +16,30 @@ namespace voxelcore {
 	
 	public class WorkerPool<SomeType> {
 		private Mutex mutex = new Mutex();
-		private AsyncQueue<SomeType> vector_queue = new AsyncQueue<SomeType>();
-		private ThreadTracker[] pool;
-		private bool running = false;
-		private bool dry_up = false;
+		private AsyncQueue<SomeType> input_queue {get; set;}
+		private LinkedList<ThreadTracker> pool {get; set;}
+		public bool running {get; private set; default = false;}
+		public bool dry_up {get; private set; default = false;}
 		
 		public signal void event_hook ( SomeType entity );
 		
-		public WorkerPool(int thread_count, bool wait) {
-			pool = new ThreadTracker[thread_count];
+		public WorkerPool(AsyncQueue<SomeType?> work_src, int thread_count, bool wait) {
+			pool = new LinkedList<ThreadTracker>();
+			input_queue = work_src;
 			if (wait) {
 				mutex.lock();
 			}
 			else {
 				running = true;
 			}
-			for (int i=0; i<thread_count; i+=1) {
+			increase_pool(thread_count);
+		}
+
+		public void increase_pool(int n) requires(n > 0) {
+			for (int i=0; i<n; i+=1) {
 				unowned Thread<void*> foo = Thread.create<void*>(run_thread, true);
-				foo.set_priority(ThreadPriority.HIGH); // make it count!
-				pool[i] = new ThreadTracker(foo);
+				foo.set_priority(ThreadPriority.HIGH);
+				pool.add(new ThreadTracker(foo));
 			}
 		}
 		
@@ -44,13 +52,9 @@ namespace voxelcore {
 		
 		public void join_all () {
 			dry_up = true;
-			for (int i=0; i<pool.length; i+=1) {
-				pool[i].join();
+			foreach (var thread in pool) {
+				thread.join();
 			}
-		}
-		
-		public void feed (SomeType input) {
-			vector_queue.push(input);
 		}
 		
 		public void* run_thread () {
@@ -62,7 +66,7 @@ namespace voxelcore {
 			while (true) {
 				var wait = TimeVal();
 				wait.add(1000);
-				SomeType? datum = vector_queue.timed_pop(ref wait);
+				SomeType? datum = input_queue.timed_pop(ref wait);
 				//current_thread.set_priority(ThreadPriority.HIGH);
 				if (datum == null) {
 					// queue was empty

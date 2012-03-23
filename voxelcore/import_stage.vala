@@ -6,9 +6,12 @@ using libvoxelpress.vectors;
 namespace voxelcore {
 	public class ImportStage: GLib.Object {
 		public PluginRepository<ImportPlugin> repository {get; private set;}
-		public VectorStage? next {get; set;}
+		public AsyncQueue<Face?> faces { get; set; }
+		public signal void done();
 
 		public ImportStage (string search_path) {
+			faces = new AsyncQueue<Face?>();
+			VectorModel.faces = faces;
 			repository = new PluginRepository<ImportPlugin> (search_path + "/import");
 		}
 
@@ -24,10 +27,7 @@ namespace voxelcore {
 				}
 				break;
 			}
-			// FIXME pass model along to vector stage
-			if (model != null && next != null) {
-				next.feed(model);
-			}
+			done();
 		}
 	}
 }
