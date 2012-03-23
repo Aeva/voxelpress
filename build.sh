@@ -17,7 +17,7 @@ valac --pkg gee-1.0 --pkg gio-2.0 --library=libvoxelpress -H libvoxelpress.h ../
 # compile voxelcore
 echo ""
 echo "------ voxelcore ------"
-valac --thread --pkg gee-1.0 --pkg gio-2.0 --pkg gmodule-2.0 libvoxelpress.vapi ../voxelcore/plugin_repository.vala ../voxelcore/import_stage.vala ../voxelcore/vector_stage.vala ../voxelcore/threading.vala ../voxelcore/voxelcore.vala -X libvoxelpress.so -X -I. -o voxelpress
+valac --thread --pkg gee-1.0 --pkg gio-2.0 --pkg gmodule-2.0 libvoxelpress.vapi ../voxelcore/plugin_repository.vala ../voxelcore/import_stage.vala ../voxelcore/vector_stage.vala ../voxelcore/voxel_stage.vala ../voxelcore/vector_fragmentation.vala ../voxelcore/threading.vala ../voxelcore/voxelcore.vala -X libvoxelpress.so -X -I. -o voxelpress
 
 # compile standard plugins
 echo ""
