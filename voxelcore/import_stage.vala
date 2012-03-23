@@ -19,18 +19,20 @@ namespace voxelcore {
 			new_face(face);
 		}
 
-		public void import (string path) {
-			// FIXME intelligently guess the correct loader, instead of doing this:
-			VectorModel? model = null;
-			foreach (var plugin in repository.plugins) {
-				model = plugin.create_new();
-				model.new_face.connect(feed);
-				try {
-					model.load(path);
-				} catch (Error e) {
-					continue;
+		public void import (string[] paths) {
+			foreach (var path in paths) {
+				// FIXME intelligently guess the correct loader, instead of doing this:
+				VectorModel? model = null;
+				foreach (var plugin in repository.plugins) {
+					model = plugin.create_new();
+					model.new_face.connect(feed);
+					try {
+						model.load(path);
+					} catch (Error e) {
+						continue;
+					}
+					break;
 				}
-				break;
 			}
 			done();
 		}

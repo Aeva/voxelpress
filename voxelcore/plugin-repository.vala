@@ -15,7 +15,7 @@ namespace voxelcore {
             module.symbol("register_plugin", out function);
             RegisterPluginFunc register_plugin = (RegisterPluginFunc) function;
             meta_data = register_plugin(module);        
-            stdout.printf(" - loaded \"%s\"\n", meta_data.name);
+            //stdout.printf(" - loaded \"%s\"\n", meta_data.name);
         }
         
         public SomePlugin create_new () {

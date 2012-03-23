@@ -41,39 +41,61 @@ namespace voxelcore {
 		}
 		string executable = Filename.display_basename(args[0]);
 		string plugins_path = args[0][0:-1*executable.length] + "plugins";
-	   
-		// FIXME use stuff like Glib.OptionContext for parsing options.
-		if (args.length == 1) {
-			stdout.printf("No input files;  nothing done.\n");
-			return 0;
-		}
-		else {
-			// Configure the pipeline
-			var import_stage = new ImportStage(plugins_path);
-			var vector_stage = new VectorStage(plugins_path, import_stage);
-			import_stage.done.connect(() => {
-					var count = import_stage.face_count;
-					stdout.printf(@" # triangles processed: $count\n");
-					vector_stage.speed_up();
-					vector_stage.join();
-				});
 
-			unowned Thread<void*> current_thread = Thread.self<void*>();
-			current_thread.set_priority(ThreadPriority.URGENT);
-	   
-			try {
-				// Attempt to start this stuff up!
-				stdout.printf(" # pipeline configured\n");
-				benchmark(() => {
-						import_stage.import(args[1]);
-					});
-			} catch (IOError err) {
-				stdout.printf("An IO error occured =(\n");
-				return 1;
-			} catch (VectorModelError err) {
-				stdout.printf("A Vector model error occured =(\n");
-				return 1;
+		string out_file = "";
+		OptionEntry[] entries = new OptionEntry[] {
+			OptionEntry () {
+				long_name="outfile",
+				short_name='o', 
+				flags=OptionFlags.IN_MAIN,
+				arg=OptionArg.FILENAME_ARRAY,
+				arg_data=out_file,
+				description="Where to dump whatever the results.",
+				arg_description="file"
 			}
+		};
+		entries.resize(entries.length + 1); // crashes if you don't do this
+
+		// Configure the pipeline
+		var import_stage = new ImportStage(plugins_path);
+		var vector_stage = new VectorStage(plugins_path, import_stage);
+		import_stage.done.connect(() => {
+				var count = import_stage.face_count;
+				stdout.printf(@" # triangles imported: $count\n");
+				vector_stage.speed_up();
+				vector_stage.join();
+			});
+
+		// Setup option context:
+		var options = new OptionContext("file...");
+		options.add_main_entries(entries, null);
+
+		// Add additional option groups:
+		options.add_group(vector_stage.get_plugin_options());
+
+		
+		// Parse options and begin processing, if applicable.
+		try {
+			options.parse(ref args);
+			if (args.length > 0) {
+				unowned Thread<void*> current_thread = Thread.self<void*>();
+				current_thread.set_priority(ThreadPriority.URGENT);
+				vector_stage.install();
+				stdout.printf(" # pipeline configured\n");
+				benchmark(() => { import_stage.import(args); });
+			}
+			else {
+				stdout.printf("Nothing to do.\n");
+			}
+		} catch (IOError err) {
+			stdout.printf("An IO error occured =(\n");
+			return 1;
+		} catch (VectorModelError err) {
+			stdout.printf("A Vector model error occured =(\n");
+			return 1;
+		} catch (OptionError err) {
+			stdout.printf("Option error?\n");
+			return 1;		
 		}
 		return 0;
 	}

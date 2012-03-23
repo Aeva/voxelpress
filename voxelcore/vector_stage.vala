@@ -27,19 +27,47 @@ namespace voxelcore {
             } catch (ThreadError e) {
                 stdout.printf("Failed to create thread pool.\n");
             }
-            // FIXME: Sort plugins by priority, and ignore explicit plugins when appropriate.
-            // FIXME: Add "fragmentation" stuff to the end of each pipeline.
-            foreach (var plugin in repository.plugins) {
-                pipeline.add(plugin.create_new());
-            }
-			pipeline.add(new Vector2Fragment());
 			import_stage.new_face.connect(feed);
 			thread_pool.event_hook.connect(worker_func);
-			thread_pool.start();
         }
 
-		private void feed (Face face) {
-			faces.push(face);
+		public void install() {
+            foreach (var plugin in repository.plugins) {
+				var info = (VectorMetaData) plugin.meta_data;
+				if (info.condition()) {
+					pipeline.add(plugin.create_new());
+				}
+				else {
+					stdout.printf(" - ignored: %s\n", info.name);
+				}
+            }
+			pipeline.add(new Vector2Fragment());
+			thread_pool.start();
+		}
+
+		public OptionGroup get_plugin_options () {
+			OptionEntry[] entries = {};
+			foreach (var plugin in repository.plugins) {
+				var info = (VectorMetaData) plugin.meta_data;
+				foreach (var option in info.options) {
+					entries += option;
+				}
+			 }
+			entries.resize(entries.length + 1); // crashes if you don't do this
+
+			var group = new OptionGroup(
+				"vector-plugins",
+				"Vector Plugin Options",
+				"Show help entries for the vector plugins",
+				null,
+				null);
+
+			group.add_entries(entries);
+			return group;
+		 }
+
+		 private void feed (Face face) {
+			 faces.push(face);
 		}
 
 		public void speed_up () {
