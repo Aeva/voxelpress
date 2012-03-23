@@ -8,6 +8,7 @@ public class ObjModel : VectorModel, ImportPlugin {
 	// speed things up a bit for sufficiently large models.
 	private Vec3[] vertex_array = {};
 	private Vec3[] normal_array = {};
+	public override int face_count { get; private set; }
 	
 	public override void load(string path) throws IOError, VectorModelError {
 		var file = File.new_for_path(path);
@@ -46,17 +47,16 @@ public class ObjModel : VectorModel, ImportPlugin {
 				}
 				if (line.has_prefix("f ")) {
 					// FIXME break down quads into triangles.
-					var face = new Face();
+					Face face = new Face();
 					var parts = line.split(" ");
 					for (int i=0; i<3; i+=1) {
 						var bits = parts[1+i].split("/");
 						face.vertices[i] = vertex_array[int.parse(bits[0])-1];
 						face.normals[i] = normal_array[int.parse(bits[2])-1];
 					}
-					faces.push(face);
-					face_count += 1;
+					//faces.push(face);
+					new_face(face);
 				}
-				
 				line = IN.read_line(null);
 			}
 			

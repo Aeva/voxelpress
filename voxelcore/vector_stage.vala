@@ -11,16 +11,19 @@ namespace voxelcore {
 		private WorkerPool<Face> thread_pool {get; set;}
         public PluginRepository<VectorPlugin> repository {get; private set;}
         public ArrayList<VectorPlugin> pipeline {get; set;}
+		private AsyncQueue<Face?> faces = new AsyncQueue<Face?>();
+
 		public bool started { get { return thread_pool.running; } }
 		public bool active { get { return thread_pool.running && !thread_pool.dry_up; } }
+
+
 		public signal void done();
 
-        public VectorStage (string search_path, AsyncQueue<Face?> faces) {
+        public VectorStage (string search_path, ImportStage import_stage) {
             repository = new PluginRepository<VectorPlugin> (search_path + "/vector");
             pipeline = new ArrayList<VectorPlugin>();
             try {
-				var foo = new AsyncQueue<Face?>();
-				thread_pool = new WorkerPool<Face> (foo, 1, true);
+				thread_pool = new WorkerPool<Face> (faces, 1, true);
             } catch (ThreadError e) {
                 stdout.printf("Failed to create thread pool.\n");
             }
@@ -30,12 +33,17 @@ namespace voxelcore {
                 pipeline.add(plugin.create_new());
             }
 			pipeline.add(new Vector2Fragment());
+			import_stage.new_face.connect(feed);
 			thread_pool.event_hook.connect(worker_func);
 			thread_pool.start();
         }
 
+		private void feed (Face face) {
+			faces.push(face);
+		}
+
 		public void speed_up () {
-			thread_pool.increase_pool(3);
+			thread_pool.increase_pool(2);
 		}
 
 		public void join () {
@@ -60,7 +68,7 @@ namespace voxelcore {
 	public class Vector2Fragment : GLib.Object, VectorPlugin {
 		// implied final plugin for the vector_stage
 		public void transform (Face face) throws VectorModelError {
-			stdout.printf(".");
+			//stdout.printf(".");
 		}
 	}
 }

@@ -59,7 +59,6 @@ namespace voxelcore {
 		
 		public void* run_thread () {
 			// Wait until start has been called:
-			unowned Thread<void*> current_thread = Thread.self<void*>();
 			mutex.lock();
 			mutex.unlock();
 			
@@ -67,14 +66,12 @@ namespace voxelcore {
 				var wait = TimeVal();
 				wait.add(1000);
 				SomeType? datum = input_queue.timed_pop(ref wait);
-				//current_thread.set_priority(ThreadPriority.HIGH);
 				if (datum == null) {
 					// queue was empty
 					if (dry_up) {
 						break;
 					}
 					else {
-						//current_thread.set_priority(ThreadPriority.LOW);
 						//stdout.printf("thread stalled\n");
 						Thread.yield();
 						continue;

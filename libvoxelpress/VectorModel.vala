@@ -79,8 +79,8 @@ namespace libvoxelpress.vectors {
 	}
 
 	public abstract class VectorModel : GLib.Object {
-		public static AsyncQueue<Face?> faces { get; set; }
-		public static int face_count = 0;
+		public signal void new_face (Face face);
+		public abstract int face_count { get; private set; }
 		public abstract void load(string path) throws IOError, VectorModelError;
 	}
 }

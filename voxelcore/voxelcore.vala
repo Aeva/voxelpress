@@ -50,9 +50,9 @@ namespace voxelcore {
 		else {
 			// Configure the pipeline
 			var import_stage = new ImportStage(plugins_path);
-			var vector_stage = new VectorStage(plugins_path, import_stage.faces);
+			var vector_stage = new VectorStage(plugins_path, import_stage);
 			import_stage.done.connect(() => {
-					var count = VectorModel.face_count;
+					var count = import_stage.face_count;
 					stdout.printf(@" # triangles processed: $count\n");
 					vector_stage.speed_up();
 					vector_stage.join();
@@ -65,7 +65,7 @@ namespace voxelcore {
 				// Attempt to start this stuff up!
 				stdout.printf(" # pipeline configured\n");
 				benchmark(() => {
-						import_stage.feed(args[1]);
+						import_stage.import(args[1]);
 					});
 			} catch (IOError err) {
 				stdout.printf("An IO error occured =(\n");
