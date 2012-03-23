@@ -12,7 +12,7 @@ mkdir backends
 # compile libvoxelpress
 echo ""
 echo "------ libvoxelpress ------"
-valac --pkg gee-1.0 --pkg gio-2.0 --library=libvoxelpress -H libvoxelpress.h ../libvoxelpress/debug.vala ../libvoxelpress/VectorModel.vala ../libvoxelpress/plugin-api.vala -X -fPIC -X -shared -o libvoxelpress.so -X -lm
+valac --pkg gee-1.0 --pkg gio-2.0 --library=libvoxelpress -H libvoxelpress.h ../libvoxelpress/debug.vala ../libvoxelpress/vector_model.vala ../libvoxelpress/plugin_api.vala -X -fPIC -X -shared -o libvoxelpress.so -X -lm
 
 # compile voxelcore
 echo ""
@@ -22,9 +22,9 @@ valac --thread --pkg gee-1.0 --pkg gio-2.0 --pkg gmodule-2.0 libvoxelpress.vapi 
 # compile standard plugins
 echo ""
 echo "------ import plugin obj-model ------"
-valac --pkg gee-1.0 --pkg gio-2.0 --pkg gmodule-2.0 libvoxelpress.vapi ../voxelcore/plugins/import/obj-model.vala -C
-gcc -shared -fPIC $(pkg-config --cflags --libs glib-2.0 gmodule-2.0 gee-1.0 gio-2.0) -o plugins/import/obj-model.so obj-model.c libvoxelpress.so -I.
-rm obj-model.c
+valac --pkg gee-1.0 --pkg gio-2.0 --pkg gmodule-2.0 libvoxelpress.vapi ../voxelcore/plugins/import/obj_model.vala -C
+gcc -shared -fPIC $(pkg-config --cflags --libs glib-2.0 gmodule-2.0 gee-1.0 gio-2.0) -o plugins/import/obj_model.so obj_model.c libvoxelpress.so -I.
+rm obj_model.c
 
 echo ""
 echo "------ vector plugin scale ------"
