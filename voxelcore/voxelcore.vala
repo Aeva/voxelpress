@@ -97,6 +97,10 @@ namespace voxelcore {
 		// Parse options and begin processing, if applicable.
 		try {
 			options.parse(ref args);
+			if (out_file == "") {
+				stdout.printf("No outfile given, nothing done.\n");
+				return 1;
+			}
 			if (args.length > 0) {
 				unowned Thread<void*> current_thread = Thread.self<void*>();
 				current_thread.set_priority(ThreadPriority.URGENT);
