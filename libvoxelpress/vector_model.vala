@@ -56,15 +56,15 @@ namespace libvoxelpress.vectors {
 		}
 	}
 
-	public class double mix (double x, double y, double a) {
+	public double mix (double x, double y, double a) {
 		return x*(1.0-a) + y*a;
 	}
 
-	public class Vec3 mix_Vec3 (Vec3 x, Vec3 y, double a) {
+	public Vec3 mix_Vec3 (Vec3 x, Vec3 y, double a) {
 		return new Vec3.with_coords(
-			mix(x[0], y[0], a),
-			mxi(x[1], y[1], a),
-			mxi(x[2], y[2], a)
+			mix(x.data[0], y.data[0], a),
+			mix(x.data[1], y.data[1], a),
+			mix(x.data[2], y.data[2], a)
 			);
 	}
 	
