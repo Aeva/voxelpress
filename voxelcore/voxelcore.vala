@@ -52,7 +52,7 @@ namespace voxelcore {
 				flags=OptionFlags.IN_MAIN,
 				arg=OptionArg.FILENAME_ARRAY,
 				arg_data=out_file,
-				description="Where to dump whatever the results.",
+				description="Where to save the results.",
 				arg_description="file"
 			},
 			OptionEntry () {
