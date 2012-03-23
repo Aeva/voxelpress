@@ -43,6 +43,8 @@ namespace voxelcore {
 		string plugins_path = args[0][0:-1*executable.length] + "plugins";
 
 		string out_file = "";
+		double resolution = 0.6;
+		double thickness = 0.6;
 		OptionEntry[] entries = new OptionEntry[] {
 			OptionEntry () {
 				long_name="outfile",
@@ -52,6 +54,24 @@ namespace voxelcore {
 				arg_data=out_file,
 				description="Where to dump whatever the results.",
 				arg_description="file"
+			},
+			OptionEntry () {
+				long_name="resolution",
+				short_name='r', 
+				flags=OptionFlags.IN_MAIN,
+				arg=0,
+				arg_data=&resolution,
+				description="Grid resolution, in mm.",
+				arg_description=".6"
+			},
+			OptionEntry () {
+				long_name="thickness",
+				short_name='t', 
+				flags=OptionFlags.IN_MAIN,
+				arg=0,
+				arg_data=&thickness,
+				description="Voxel height, in mm.",
+				arg_description=".4"
 			}
 		};
 		entries.resize(entries.length + 1); // crashes if you don't do this
@@ -80,8 +100,12 @@ namespace voxelcore {
 			if (args.length > 0) {
 				unowned Thread<void*> current_thread = Thread.self<void*>();
 				current_thread.set_priority(ThreadPriority.URGENT);
-				vector_stage.install();
+
+				// build pipeline
+				vector_stage.setup_pipeline(resolution, thickness);
 				stdout.printf(" # pipeline configured\n");
+
+				// fire it up
 				benchmark(() => { import_stage.import(args); });
 			}
 			else {

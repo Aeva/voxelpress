@@ -16,8 +16,8 @@ namespace voxelcore {
 		public bool started { get { return thread_pool.running; } }
 		public bool active { get { return thread_pool.running && !thread_pool.dry_up; } }
 
-
 		public signal void done();
+
 
         public VectorStage (string search_path, ImportStage import_stage) {
             repository = new PluginRepository<VectorPlugin> (search_path + "/vector");
@@ -31,7 +31,8 @@ namespace voxelcore {
 			thread_pool.event_hook.connect(worker_func);
         }
 
-		public void install() {
+
+		public void setup_pipeline(double resolution, double thickness) {
             foreach (var plugin in repository.plugins) {
 				var info = (VectorMetaData) plugin.meta_data;
 				if (info.condition()) {
@@ -41,9 +42,10 @@ namespace voxelcore {
 					stdout.printf(" - ignored: %s\n", info.name);
 				}
             }
-			pipeline.add(new Vector2Fragment());
+			pipeline.add(new Vector2Fragment(resolution, thickness));
 			thread_pool.start();
 		}
+
 
 		public OptionGroup get_plugin_options () {
 			OptionEntry[] entries = {};
@@ -95,6 +97,14 @@ namespace voxelcore {
 
 	public class Vector2Fragment : GLib.Object, VectorPlugin {
 		// implied final plugin for the vector_stage
+		private double resolution;
+		private double thickness;
+
+		public Vector2Fragment(double resolution, double thickness) {
+			this.resolution = resolution;
+			this.thickness = thickness;
+		}
+
 		public void transform (Face face) throws VectorModelError {
 			//stdout.printf(".");
 		}
