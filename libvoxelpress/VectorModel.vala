@@ -7,8 +7,17 @@ namespace libvoxelpress.vectors {
 		DISCARD_FACE
 	}
 
-	public class Vec3: GLib.Object {
-		public double[] data = new double[] {0, 0, 0};
+	public interface Vector: GLib.Object {
+		public abstract double[] data {get; set;}
+		public void scale(double amount) {
+			for (int i=0; i<data.length; i+=1) {
+				data[i] = data[i] * amount;
+			}
+		}
+	}
+
+	public class Vec3: GLib.Object, Vector {
+		public double[] data { get; set; default = new double[] {0, 0, 0}; }
 		public Vec3() {
 		}
 		public Vec3.with_coords (double a, double b, double c) {
@@ -18,8 +27,8 @@ namespace libvoxelpress.vectors {
 		}
 	}
 	
-	public class Vec4: GLib.Object {
-		public double[] data = new double[] {0, 0, 0};
+	public class Vec4: GLib.Object, Vector {
+		public double[] data { get; set; default = new double[] {0, 0, 0}; }
 		public Vec4() {
 		}
 		public Vec4.with_coords (double a, double b, double c, double d) {
