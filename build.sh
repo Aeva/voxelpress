@@ -12,7 +12,7 @@ mkdir backends
 # compile libvoxelpress
 echo ""
 echo "------ libvoxelpress ------"
-valac --pkg gee-1.0 --pkg gio-2.0 --library=libvoxelpress -H libvoxelpress.h ../libvoxelpress/debug.vala ../libvoxelpress/vector_model.vala ../libvoxelpress/vector_math.vala ../libvoxelpress/plugin_api.vala ../libvoxelpress/pdq_btree.vala -X -fPIC -X -shared -o libvoxelpress.so -X -lm
+valac --pkg gee-1.0 --pkg gio-2.0 --library=libvoxelpress -H libvoxelpress.h ../libvoxelpress/debug.vala ../libvoxelpress/vector_model.vala ../libvoxelpress/vector_math.vala ../libvoxelpress/fragments.vala ../libvoxelpress/plugin_api.vala ../libvoxelpress/pdq_btree.vala -X -fPIC -X -shared -o libvoxelpress.so -X -lm
 
 # compile voxelcore
 echo ""
