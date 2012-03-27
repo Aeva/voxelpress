@@ -269,12 +269,13 @@ namespace libvoxelpress.etc {
         }
         
         public void sequential (BTreeIterativeCallback<SomeType> func) {
-            // Call 'func' on all tree elements, in order from lowest to highest.
+            // Calls 'func' on all tree elements, in order from lowest to highest.
             root.sequential(func);
         }
         
         public void breadth_first (BTreeTransversalCallback<SomeType> func, BTreeShellCallback on_shell) {
-            // Call 'func' on all tree elements, via breadth first transversal.
+            // Calls 'func' on all tree elements, via breadth first transversal.
+			// Calls 'on_shell' at the beginning of each 'shell' of the b-tree.
             for (int shell = root.height; shell>=1; shell-=1) {
                 on_shell(root.height-shell+1);
                 root.breadth_first(func, shell);
