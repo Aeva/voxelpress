@@ -1,8 +1,7 @@
 
 
-
-
 namespace libvoxelpress.etc {
+
     public delegate int BTreeComparisonFunction<SomeType> (SomeType x, SomeType y);
     public delegate void BTreeTransversalCallback<SomeType> (BNode<SomeType> node);
     public delegate void BTreeIterativeCallback<SomeType> (SomeType val);
@@ -100,24 +99,21 @@ namespace libvoxelpress.etc {
         }
         
         private bool contains(SomeType val) {
-            return (low_mask && val == low) || (high_mask && val == high);
+            return (low_mask && cmp(val, low) == 0) || (high_mask && cmp(val, high) == 0);
         }
-        
-        public bool has(SomeType val) {
-            if (contains(val)) {
-                return true;
-            }
-            else if (bottom) {
-                return false;
-            }
-            else {
-                var path = route(val, true);
-                if (path != null) {
-                    return path.has(val);
-                }
-            }
-            return false;
-        }
+
+		public SomeType? fetch(SomeType val) {
+			if (contains(val)) {
+				return cmp(val, low) == 0 ? low : high;
+			}
+			else if (!bottom) {
+				var path = route(val, true);
+				if (path != null) {
+					return path.fetch(val);
+				}
+			}
+			return null;
+		}
         
         public bool push(SomeType val) {
             if (!contains(val)) {
@@ -245,9 +241,13 @@ namespace libvoxelpress.etc {
             this.cmp = cmp;
             root = new BNode<SomeType>.seed(this, cmp);
         }
+
+		public SomeType? fetch(SomeType val) {
+			return root.fetch(val);
+		}
         
         public bool has(SomeType val) {
-            return root.has(val);
+			return root.fetch(val) != null;
         }
         
         public void push(SomeType val) {
