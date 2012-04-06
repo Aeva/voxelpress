@@ -64,6 +64,9 @@ voxelcore:
 
 
 plugins: import_plugins vector_plugins
+	echo ""
+	echo "------ cleanup stray .c files for plugins ------"
+	rm $(plugin)/*/*.c
 
 
 import_plugins:
