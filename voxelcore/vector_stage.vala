@@ -1,7 +1,7 @@
 using Gee;
 using libvoxelpress.plugins;
 using libvoxelpress.vectors;
-
+using libvoxelpress.fragments;
 
 
 
@@ -11,6 +11,7 @@ namespace voxelcore {
         public PluginRepository<VectorPlugin> repository {get; private set;}
         public ArrayList<VectorPlugin> pipeline {get; set;}
 		private AsyncQueue<Face?> faces = new AsyncQueue<Face?>();
+		private FragmentCache cache = new FragmentCache();
 
 		public bool started { get { return thread_pool.running; } }
 		public bool active { get { return thread_pool.running && !thread_pool.dry_up; } }
@@ -41,7 +42,7 @@ namespace voxelcore {
 					stdout.printf(" - ignored: %s\n", info.name);
 				}
             }
-			pipeline.add(new Vector2Fragment(resolution, thickness));
+			pipeline.add(new Vector2Fragment(resolution, thickness, cache));
 			thread_pool.start();
 		}
 
