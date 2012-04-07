@@ -12,8 +12,8 @@ plugin = voxelcore/plugins
 # compiler flags
 COMMON_VFLAGS = --pkg gee-1.0 --pkg gio-2.0 --pkg gmodule-2.0
 PLUGIN_VFLAGS = bin/libvoxelpress.vapi -C
-PLUGIN_CFLAGS = -shared -fPIC $$(pkg-config --cflags --libs glib-2.0 gmodule-2.0 gee-1.0 gio-2.0) -I./bin
-LIBVPRESS_VFLAGS = --library=libvoxelpress -H bin/libvoxelpress.h -X -lm -X -fPIC -X -shared -o bin/libvoxelpress.so
+PLUGIN_CFLAGS = -shared -fPIC $$(pkg-config --cflags --libs glib-2.0 gmodule-2.0 gee-1.0 gio-2.0) -I./bin libvoxelpress.so
+LIBVPRESS_VFLAGS = --library=libvoxelpress -H bin/libvoxelpress.h -X -lm -X -fPIC -X -shared -o libvoxelpress.so
 VOXELCORE_VFLAGS = --thread bin/libvoxelpress.vapi -X libvoxelpress.so -X -I./bin -o bin/voxelpress
 
 # source code files
@@ -34,13 +34,13 @@ VOXELCORE_SRC = $(vcore)/plugin_repository.vala \
 
 # plugin specific stuff
 IMPORT_OBJ_VFLAGS = $(plugin)/import/obj_model.vala
-IMPORT_OBJ_CFLAGS = $(plugin)/import/obj_model.c -o bin/plugins/import/obj_model.so libvoxelpress.so 
+IMPORT_OBJ_CFLAGS = $(plugin)/import/obj_model.c -o bin/plugins/import/obj_model.so
 
 VECTOR_DERP_VFLAGS = $(plugin)/vector/derp.vala
-VECTOR_DERP_CFLAGS = $(plugin)/vector/derp.c -o bin/plugins/vector/derp.so libvoxelpress.so
+VECTOR_DERP_CFLAGS = $(plugin)/vector/derp.c -o bin/plugins/vector/derp.so
 
 VECTOR_SCALE_VFLAGS = $(plugin)/vector/scale.vala
-VECTOR_SCALE_CFLAGS =  $(plugin)/vector/scale.c -o bin/plugins/vector/scale.so libvoxelpress.so
+VECTOR_SCALE_CFLAGS =  $(plugin)/vector/scale.c -o bin/plugins/vector/scale.so
 
 
 
@@ -55,6 +55,7 @@ libvoxelpress:
 	echo "------ libvoxelpress ------"
 	$(VC) $(COMMON_VFLAGS) $(LIBVPRESS_VFLAGS) $(LIBVPRESS_SRC)
 	mv libvoxelpress.vapi bin/
+	cp libvoxelpress.so bin/
 
 
 voxelcore:
@@ -104,6 +105,7 @@ build_folder:
 
 
 quick_run:
+	rm libvoxelpress.so
 	echo ""
 	echo "------ generating quickrun script ------"
 	echo "cd bin; LD_LIBRARY_PATH=. ./voxelpress \$$@" >> test_voxelpress.sh
