@@ -58,38 +58,6 @@ namespace libvoxelpress.etc {
                 height = 1;
             }
 
-			public void shell (int height) {
-				if (height == this.height) {
-					string _low = "  ";
-					string _high = "  ";
-					if (low != null) {
-						_low = ((int)low.key).to_string();
-					}
-					if (high != null) {
-						_high = ((int)high.key).to_string();
-					}
-
-					string a = lhs != null ? " v " : " _ ";
-					string b = mid != null ? " v " : " _ ";
-					string c = rhs != null ? " v " : " _ ";
-
-
-					string msg = "[" + a + _low + b + _high + c + "] ";
-					stdout.printf(msg);
-				}
-				else if (!is_bottom) {
-					if (lhs != null) {
-						lhs.shell(height);
-					}
-					if (mid != null) {
-						mid.shell(height);
-					}
-					if (rhs != null) {
-						rhs.shell(height);
-					}
-				}
-			}
-
             public BNode<Key,Val>? route(Key key, bool no_create) {
                 BNode<Key,Val>? result = null;
                 if (low_mask) {
@@ -353,13 +321,6 @@ namespace libvoxelpress.etc {
 				high = cap;
 			}
 			head.push(cap);
-		}
-
-		public void shell() {
-			for (int i=head.depth; i>0; i-=1) {
-				head.root.shell(i);
-				stdout.printf("\n");
-			}
 		}
     }
 }
