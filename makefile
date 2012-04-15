@@ -21,8 +21,9 @@ LIBVPRESS_SRC = $(libvp)/debug.vala \
 		$(libvp)/vector_model.vala \
 		$(libvp)/vector_math.vala \
 		$(libvp)/fragments.vala \
+		$(libvp)/voxel_model.vala \
 		$(libvp)/plugin_api.vala \
-		$(libvp)/pdq_btree.vala
+		$(libvp)/btree.vala
 
 VOXELCORE_SRC = $(vcore)/plugin_repository.vala \
 		$(vcore)/import_stage.vala \
