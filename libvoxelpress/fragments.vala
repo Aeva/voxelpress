@@ -16,17 +16,17 @@ namespace libvoxelpress.fragments {
             this.z = z;
         }
 
-        public int cmp (Coordinate other) {
-            if (this.y < other.y) {
+        public static int cmp (Coordinate lhs, Coordinate rhs) {
+            if (lhs.y < rhs.y) {
                 return -1;
             }
-            else if (this.y > other.y) {
+            else if (lhs.y > rhs.y) {
                 return 1;
             }
-            else if (this.x < other.x) {
+            else if (lhs.x < rhs.x) {
                 return -1;
             }
-            else if (this.x > other.x) {
+            else if (lhs.x > rhs.x) {
                 return 1;
             }
             else {
@@ -41,10 +41,10 @@ namespace libvoxelpress.fragments {
         public Vec3 normal {get; set;}
         public bool solid {get; set; default=true;}
 
-        public Object? create() {
+        public static Object? create() {
             var frag = new Fragment();
             frag.solid = false;
-            return (Object) frag;
+            return frag;
         }
     }
 }

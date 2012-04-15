@@ -5,15 +5,15 @@ using libvoxelpress.etc;
 
 namespace libvoxelpress.fragments {
 
-    public interface VoxelModel<VoxelType>: Object {
-        public abstract VoxelType min {get; private set;}
-        public abstract VoxelType max {get; private set;}
-        public abstract VoxelType seek (int x, int y, int z);
-        public abstract void push(VoxelType voxel);
+    public interface VoxelModel: Object {
+        public abstract Fragment? min {get; private set;}
+        public abstract Fragment? max {get; private set;}
+        public abstract Fragment? seek (int x, int y, int z);
+        public abstract void push(Fragment? voxel);
     }
 
 
-    public class BlockedLayer: Object {
+	public class BlockedLayer: Object {
         public Fragment? min {get; private set; default=null;}
         public Fragment? max {get; private set; default=null;}
         public Fragment? seek (int x, int y) {
@@ -21,14 +21,46 @@ namespace libvoxelpress.fragments {
         }
         public void push (Fragment? voxel) {
         }
+		public static Object? create() {
+            return new BlockedLayer();
+        }
     }
 
 
-    public class BlockedModel: Object, VoxelModel<Fragment?> {
+	public class CacheLayer: Object {
+		/* pdq layer type, replace with BlockedLayer once it is written */
         public Fragment? min {get; private set; default=null;}
         public Fragment? max {get; private set; default=null;}
-        public Fragment? seek (int x, int y, int z);
-        public void push(Fragment? voxel);    
+        public Fragment? seek (int x, int y) {
+            return null;
+        }
+        public void push (Fragment? voxel) {
+        }
+		public static Object? create() {
+            return new BlockedLayer();
+        }
+	}
+
+
+    public class BlockedModel: Object, VoxelModel {
+		public Btree<int,CacheLayer> layers {get; private set;}
+
+        public Fragment? min {get; private set; default=null;}
+        public Fragment? max {get; private set; default=null;}
+
+		public BlockedModel () {
+			layers = new Btree<int,BlockedLayer>(
+				(lhs, rhs) => {return (lhs<rhs) ? -1 : (lhs>rhs) ? 1 : 0;}, BlockedLayer.create);
+		}
+
+        public Fragment? seek (int x, int y, int z) {
+			var layer = new CacheLayer(); // FIXME implement BlockedModel
+
+
+			return null;
+		}
+        public void push(Fragment? voxel) {
+		}
     }
 }
     
