@@ -8,7 +8,7 @@ namespace libvoxelpress.fragments {
     public class Coordinate: GLib.Object {
         public int x = 0;
         public int y = 0;
-        public int z = 0;
+		public int z = 0;
 
         public Coordinate (int x, int y, int z) {
             this.x = x;
@@ -16,7 +16,7 @@ namespace libvoxelpress.fragments {
             this.z = z;
         }
 
-        public static int cmp (Coordinate lhs, Coordinate rhs) {
+        public static int cmp_2D (Coordinate lhs, Coordinate rhs) {
             if (lhs.y < rhs.y) {
                 return -1;
             }
@@ -33,6 +33,18 @@ namespace libvoxelpress.fragments {
                 return 0;
             }
         }
+
+		public static int cmp_3D (Coordinate lhs, Coordinate rhs) {
+			if (lhs.z < rhs.z) {
+				return -1;
+			}
+			else if (lhs.z > rhs.z) {
+				return 1;
+			}
+			else {
+				return cmp_2D (lhs, rhs);
+			}
+		}
     }
 
 
@@ -41,7 +53,7 @@ namespace libvoxelpress.fragments {
         public Vec3 normal {get; set;}
         public bool solid {get; set; default=true;}
 
-        public static Object? create() {
+        public Object? create() {
             var frag = new Fragment();
             frag.solid = false;
             return frag;

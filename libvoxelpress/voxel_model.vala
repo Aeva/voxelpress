@@ -9,7 +9,7 @@ namespace libvoxelpress.fragments {
         public abstract Fragment? min {get; private set;}
         public abstract Fragment? max {get; private set;}
         public abstract Fragment? seek (int x, int y, int z);
-        public abstract void push(Fragment? voxel);
+        public abstract void push(int x, int y, int z, Fragment? voxel);
     }
 
 
@@ -29,12 +29,16 @@ namespace libvoxelpress.fragments {
 
 	public class CacheLayer: Object {
 		/* pdq layer type, replace with BlockedLayer once it is written */
-        public Fragment? min {get; private set; default=null;}
-        public Fragment? max {get; private set; default=null;}
-        public Fragment? seek (int x, int y) {
-            return null;
+		public Btree<Coordinate, Fragment> data {get; private set;}
+		
+		public CacheLayer () {
+			data = new BTree<Coordinate, Fragmnet>();
+		}
+        public Fragment? seek (Coordinate coords) {
+            return data.fetch_or_create(coords);
         }
-        public void push (Fragment? voxel) {
+        public void push (Coordinate coords, Fragment? voxel) {
+			data.push(coords, voxel);
         }
 		public static Object? create() {
             return new BlockedLayer();
@@ -45,8 +49,8 @@ namespace libvoxelpress.fragments {
     public class BlockedModel: Object, VoxelModel {
 		public Btree<int,CacheLayer> layers {get; private set;}
 
-        public Fragment? min {get; private set; default=null;}
-        public Fragment? max {get; private set; default=null;}
+        public Coordinate? min {get; private set; default=null;}
+        public Coordinate? max {get; private set; default=null;}
 
 		public BlockedModel () {
 			layers = new Btree<int,BlockedLayer>(
@@ -54,92 +58,27 @@ namespace libvoxelpress.fragments {
 		}
 
         public Fragment? seek (int x, int y, int z) {
-			var layer = new CacheLayer(); // FIXME implement BlockedModel
-
-
-			return null;
+			lock(layers) {
+				var layer = layers.fetch_or_create(z);
+			}
+			return layer.seek(new Coordinate (x, y, z));
 		}
-        public void push(Fragment? voxel) {
+        public void push(int x, int y, int z, Fragment? voxel) {
+			var coords = new Coordinate (x, y, z);
+			lock (layers) {
+				var layer = layers.fetch_or_create(z);
+			}
+			layer.push(coords, voxel);
+			lock (min) {
+				if (min == null || Coordinate.cmp_3D(min, coords) < 0) {
+					min = coords;
+				}
+			}
+			lock (max) {
+				if (max == null || Coordinate.cmp_3D(man, coords) > 1) {
+					max = coords;
+				}
+			}
 		}
     }
 }
-    
-/*
-    public class FragmentLayer: GLib.Object {
-        private BTree<Fragment> grid;
-        public BTree.cmp_func cmp {get; private set;}
-        public BTree.creation_func on_create {get; private set;}
-        
-
-
-        private BTreeComparisonFunction cmp = (x, y) => {
-        };
-        public int z {get; private set;}
-        public Fragment? min {get; private set; default = null;}
-        public Fragment? max {get; private set; default = null;}
-        
-        public FragmentLayer(int z) {
-            grid = new BTree<Fragment>(cmp);
-            this.z = z;
-        }
-
-        public void push(Fragment frag) {
-            lock (grid) {
-                grid.push(frag);
-                if (min == null || cmp(frag, min) < 0) {
-                    min = frag;
-                }
-                if (max == null || cmp(frag, max) > 0) {
-                    max = frag;
-                }
-            }
-        }
-
-        public Fragment? fetch(int x, int y) {
-            Fragment? result = null;
-            lock (grid) {
-                result = grid.fetch(new Fragment(x, y, z));
-            }
-            return result;
-        }
-    }
-
-
-    public class FragmentCache: GLib.Object {
-        private BTree<FragmentLayer> layers;
-        public int? min {get; private set; default = null;}
-        public int? max {get; private set; default = null;}
-        private BTreeComparisonFunction cmp = (a, b) => {
-            return ((FragmentLayer)a).z - ((FragmentLayer)b).z;
-        };
-        
-        public FragmentCache() {
-            layers = new BTree<FragmentLayer>(cmp);
-        }
-
-        public void push(Fragment frag) {
-            FragmentLayer? layer;
-            lock (layers) {
-                layer = layers.fetch(new FragmentLayer(frag.z));
-                if (layer == null) {
-                    layer = new FragmentLayer(frag.z);
-                    layers.push(layer);
-                    if (min == null || frag.z < min) {
-                        min = frag.z;
-                    }
-                    if (max == null || frag.z > max) {
-                        max = frag.z;
-                    }
-                }
-            }
-            layer.push(frag);
-        }
-
-        public Fragment? fetch(int x, int y, int z) {
-            FragmentLayer? layer;
-            lock (layers) {
-                layer = layers.fetch(new FragmentLayer(z));
-            }
-            return layer.fetch(x, y);
-        }
-        }*/
