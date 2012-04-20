@@ -36,7 +36,7 @@ namespace libvoxelpress.fragments {
         public Btree<Coordinate, Fragment> data {get; private set;}
         
         public CacheLayer () {
-            data = new BTree<Coordinate, Fragment>();
+            data = new BTree<Coordinate, Fragment>(Coordinate.cmp_2D, Fragment.create);
         }
         public Fragment? seek (Coordinate coords) {
             Fragment? frag;
