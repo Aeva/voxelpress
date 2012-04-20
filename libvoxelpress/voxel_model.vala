@@ -13,7 +13,10 @@ namespace libvoxelpress.fragments {
     }
 
 
-	public class BlockedLayer: Object {
+    /*
+    // ... in progress ...
+
+    public class BlockedLayer: Object {
         public Fragment? min {get; private set; default=null;}
         public Fragment? max {get; private set; default=null;}
         public Fragment? seek (int x, int y) {
@@ -21,64 +24,73 @@ namespace libvoxelpress.fragments {
         }
         public void push (Fragment? voxel) {
         }
-		public static Object? create() {
+        public static Object? create() {
             return new BlockedLayer();
+        }
+    }
+    */
+
+
+    public class CacheLayer: Object {
+        /* pdq layer type, replace with BlockedLayer once it is written */
+        public Btree<Coordinate, Fragment> data {get; private set;}
+        
+        public CacheLayer () {
+            data = new BTree<Coordinate, Fragment>();
+        }
+        public Fragment? seek (Coordinate coords) {
+            Fragment? frag;
+            lock(data) {
+                frag = data.fetch_or_create(coords);
+            }
+            return frag;
+        }
+        public void push (Coordinate coords, Fragment? voxel) {
+            lock(data) {
+                data.push(coords, voxel);
+            }
+        }
+        public static Object? create() {
+            return new CacheLayer();
         }
     }
 
 
-	public class CacheLayer: Object {
-		/* pdq layer type, replace with BlockedLayer once it is written */
-		public Btree<Coordinate, Fragment> data {get; private set;}
-		
-		public CacheLayer () {
-			data = new BTree<Coordinate, Fragmnet>();
-		}
-        public Fragment? seek (Coordinate coords) {
-            return data.fetch_or_create(coords);
-        }
-        public void push (Coordinate coords, Fragment? voxel) {
-			data.push(coords, voxel);
-        }
-		public static Object? create() {
-            return new BlockedLayer();
-        }
-	}
-
-
     public class BlockedModel: Object, VoxelModel {
-		public Btree<int,CacheLayer> layers {get; private set;}
+        public Btree<int,CacheLayer> layers {get; private set;}
 
         public Coordinate? min {get; private set; default=null;}
         public Coordinate? max {get; private set; default=null;}
 
-		public BlockedModel () {
-			layers = new Btree<int,BlockedLayer>(
-				(lhs, rhs) => {return (lhs<rhs) ? -1 : (lhs>rhs) ? 1 : 0;}, BlockedLayer.create);
-		}
+        public BlockedModel () {
+            layers = new Btree<int,CacheLayer>(
+                (lhs, rhs) => {return (lhs<rhs) ? -1 : (lhs>rhs) ? 1 : 0;}, 
+                CacheLayer.create);
+        }
 
         public Fragment? seek (int x, int y, int z) {
-			lock(layers) {
-				var layer = layers.fetch_or_create(z);
-			}
-			return layer.seek(new Coordinate (x, y, z));
-		}
-        public void push(int x, int y, int z, Fragment? voxel) {
-			var coords = new Coordinate (x, y, z);
-			lock (layers) {
-				var layer = layers.fetch_or_create(z);
-			}
-			layer.push(coords, voxel);
-			lock (min) {
-				if (min == null || Coordinate.cmp_3D(min, coords) < 0) {
-					min = coords;
-				}
-			}
-			lock (max) {
-				if (max == null || Coordinate.cmp_3D(man, coords) > 1) {
-					max = coords;
-				}
-			}
-		}
+            CacheLayer layer;
+            lock(layers) {
+                layer = layers.fetch_or_create(z);
+            }
+            return layer.seek(new Coordinate (x, y, z));
+        }
+        public void push(int x, int y, int z, Fragment voxel) {
+            var coords = new Coordinate (x, y, z);
+            lock (layers) {
+                var layer = layers.fetch_or_create(z);
+            }
+            layer.push(coords, voxel);
+            lock (min) {
+                if (min == null || Coordinate.cmp_3D(min, coords) < 0) {
+                    min = coords;
+                }
+            }
+            lock (max) {
+                if (max == null || Coordinate.cmp_3D(man, coords) > 1) {
+                    max = coords;
+                }
+            }
+        }
     }
 }
