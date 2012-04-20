@@ -53,7 +53,7 @@ namespace libvoxelpress.fragments {
         public Vec3 normal {get; set;}
         public bool solid {get; set; default=true;}
 
-        public Object? create() {
+        public static Object? create() {
             var frag = new Fragment();
             frag.solid = false;
             return frag;
