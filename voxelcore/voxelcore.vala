@@ -85,6 +85,19 @@ namespace voxelcore {
 				vector_stage.speed_up();
 				vector_stage.join();
 			});
+		vector_stage.done.connect(() => {
+				var min = vector_stage.min;
+				var max = vector_stage.max;
+				var x1 = min.x;
+				var y1 = min.y;
+				var z1 = min.z;
+				var x2 = max.x;
+				var y2 = max.y;
+				var z2 = max.z;
+				stdout.printf(" # vector stage complete:\n");
+				stdout.printf(@" - min x:$x1 y:$y1 z:$z1\n");
+				stdout.printf(@" - max x:$x2 y:$y2 z:$z2\n");
+			});
 
 		// Setup option context:
 		var options = new OptionContext("file...");

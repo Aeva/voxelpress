@@ -11,7 +11,10 @@ namespace voxelcore {
         public PluginRepository<VectorPlugin> repository {get; private set;}
         public ArrayList<VectorPlugin> pipeline {get; set;}
 		private AsyncQueue<Face?> faces = new AsyncQueue<Face?>();
-		private FragmentCache cache = new FragmentCache();
+		private BlockedModel cache = new BlockedModel();
+
+		public Coordinate? min { get { return cache.min; } }
+		public Coordinate? max { get { return cache.max; } }
 
 		public bool started { get { return thread_pool.running; } }
 		public bool active { get { return thread_pool.running && !thread_pool.dry_up; } }
@@ -66,15 +69,18 @@ namespace voxelcore {
 
 			group.add_entries(entries);
 			return group;
-		 }
-
-		 private void feed (Face face) {
-			 faces.push(face);
 		}
+
+		
+		private void feed (Face face) {
+			faces.push(face);
+		}
+
 
 		public void speed_up () {
 			thread_pool.increase_pool(2);
 		}
+
 
 		public void join () {
 			if (active) {
@@ -82,6 +88,7 @@ namespace voxelcore {
 			}
 			done();
 		}
+
 
 		private void worker_func (Face face) {
 			foreach (VectorPlugin stage in pipeline) {

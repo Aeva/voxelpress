@@ -86,15 +86,37 @@ namespace libvoxelpress.fragments {
             }
             layer.push(coords, voxel);
 			min_lock.lock();
-			if (min == null || Coordinate.cmp_3D(min, coords) < 0) {
-				min = coords;
+			if (min == null) {
+				min = new Coordinate(coords.x, coords.y, coords.z);
+			}
+			else {
+				if (coords.x < min.x) {
+					min.x = coords.x;
+				}
+				if (coords.y < min.y) {
+					min.y = coords.y;
+				}
+				if (coords.z < min.z) {
+					min.z = coords.z;
+				}
 			}
 			min_lock.unlock();
 			max_lock.lock();
-			if (max == null || Coordinate.cmp_3D(max, coords) > 1) {
-				max = coords;
+			if (max == null) {
+				max = new Coordinate(coords.x, coords.y, coords.z);
 			}
-            max_lock.unlock();
+			else {
+				if (coords.x > max.x) {
+					max.x = coords.x;
+				}
+				if (coords.y > max.y) {
+					max.y = coords.y;
+				}
+				if (coords.z > max.z) {
+					max.z = coords.z;
+				}
+			}
+			max_lock.unlock();
         }
     }
 }

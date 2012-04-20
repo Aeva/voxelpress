@@ -6,9 +6,9 @@ namespace libvoxelpress.fragments {
 
 
     public class Coordinate: GLib.Object {
-        public int x = 0;
-        public int y = 0;
-		public int z = 0;
+        public int x {get; set;}
+        public int y {get; set;}
+		public int z {get; set;}
 
         public Coordinate (int x, int y, int z) {
             this.x = x;
@@ -17,16 +17,16 @@ namespace libvoxelpress.fragments {
         }
 
         public static int cmp_2D (Coordinate lhs, Coordinate rhs) {
-            if (lhs.y < rhs.y) {
-                return -1;
-            }
-            else if (lhs.y > rhs.y) {
-                return 1;
-            }
-            else if (lhs.x < rhs.x) {
+            if (lhs.x < rhs.x) {
                 return -1;
             }
             else if (lhs.x > rhs.x) {
+                return 1;
+            }
+			else if (lhs.y < rhs.y) {
+                return -1;
+            }
+            else if (lhs.y > rhs.y) {
                 return 1;
             }
             else {

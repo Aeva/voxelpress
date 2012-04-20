@@ -4,6 +4,7 @@ using libvoxelpress.fragments;
 
 
 class Point : GLib.Object {
+	// FIXME use the coordinate class instead
 	public double x {get; set;}
 	public double y {get; set;}
 	public double z {get; set;}
@@ -86,9 +87,9 @@ namespace voxelcore {
 		// implied final plugin for the vector_stage
 		private double resolution;
 		private double thickness;
-		private FragmentCache cache;
+		private BlockedModel cache;
 
-		public Vector2Fragment(double resolution, double thickness, FragmentCache cache) {
+		public Vector2Fragment(double resolution, double thickness, BlockedModel cache) {
 			// FIXME cache should be a BTREE, not an async queue
 			this.resolution = resolution;
 			this.thickness = thickness;
@@ -133,7 +134,7 @@ namespace voxelcore {
 							int ix = (int) Math.floor(x);
 							int iy = (int) Math.floor(y);
 							int iz = (int) Math.floor(z);
-							cache.push(new Fragment(ix, iy, iz));
+							cache.push(ix, iy, iz, new Fragment());
 						}
 					}
 				}
