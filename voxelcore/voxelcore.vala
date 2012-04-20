@@ -1,5 +1,6 @@
-using libvoxelpress.vectors;
 using libvoxelpress.plugins;
+using libvoxelpress.vectors;
+using libvoxelpress.fragments;
 
 namespace voxelcore {
 
@@ -88,15 +89,42 @@ namespace voxelcore {
 		vector_stage.done.connect(() => {
 				var min = vector_stage.min;
 				var max = vector_stage.max;
-				var x1 = min.x;
-				var y1 = min.y;
-				var z1 = min.z;
-				var x2 = max.x;
-				var y2 = max.y;
-				var z2 = max.z;
+				var width = max.x - min.x;
+				var depth = max.y - min.y;
+				var height = max.z - min.z;
+
 				stdout.printf(" # vector stage complete:\n");
-				stdout.printf(@" - min x:$x1 y:$y1 z:$z1\n");
-				stdout.printf(@" - max x:$x2 y:$y2 z:$z2\n");
+				bool layer_shown = false;
+				for (int z=min.z; z<=max.z; z+=1) {
+					var layer = vector_stage.debug.layers.fetch(z);
+					int counter = 0;
+					string buf = "";
+					for (int x=min.x; x<=max.x; x+=1) {
+						buf += " ==> | ";
+						for (int y=min.y; y<=max.y; y+=1) {
+							Fragment? pick = layer.data.fetch(new Coordinate(x, y, z));
+							if (pick == null) {
+								buf += ".";
+							}
+							else {
+								buf += "#";
+							}
+						}
+						buf += "\n";
+					}
+					if (counter > 0) {
+						layer_shown = true;
+						stdout.printf(buf);
+						break;
+					}
+				}
+				if (!layer_shown) {
+					stdout.printf("( No layers contain fragments, wtf??? )\n");
+				}
+				
+				stdout.printf(@" - width=$width");
+				stdout.printf(@", depth=$depth");
+				stdout.printf(@", height=$height\n");
 			});
 
 		// Setup option context:

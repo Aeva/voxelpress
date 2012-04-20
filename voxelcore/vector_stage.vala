@@ -15,6 +15,7 @@ namespace voxelcore {
 
 		public Coordinate? min { get { return cache.min; } }
 		public Coordinate? max { get { return cache.max; } }
+		public BlockedModel debug { get { return cache; } } // FIXME: REMOVE
 
 		public bool started { get { return thread_pool.running; } }
 		public bool active { get { return thread_pool.running && !thread_pool.dry_up; } }
