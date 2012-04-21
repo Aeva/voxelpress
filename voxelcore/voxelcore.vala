@@ -95,23 +95,28 @@ namespace voxelcore {
 
 				stdout.printf(" # vector stage complete:\n");
 				bool layer_shown = false;
-				int z = min.z + 22;
+				int z = min.z+0;
 				var layer = vector_stage.debug.layers.fetch(z);
-				string buf = "";
-				for (int x=min.x; x<=max.x; x+=1) {
-					buf += " ==> | ";
-					for (int y=min.y; y<=max.y; y+=1) {
-						Fragment? pick = layer.data.fetch(new Coordinate(x, y, z));
-						if (pick == null) {
-							buf += ".";
+				if (layer != null) {
+					string buf = "";
+					for (int x=min.x; x<=max.x; x+=1) {
+						buf += " ==> | ";
+						for (int y=min.y; y<=max.y; y+=1) {
+							Fragment? pick = layer.data.fetch(new Coordinate(x, y, z));
+							if (pick == null) {
+								buf += ".";
+							}
+							else {
+								buf += "#";
+							}
 						}
-						else {
-							buf += "#";
-						}
-					}
 					buf += "\n";
+					}
+					stdout.printf(buf);
 				}
-				stdout.printf(buf);
+				else {
+					stdout.printf("No layer at z=%s\n", z.to_string());
+				}
 				
 				stdout.printf(@" - width=$width");
 				stdout.printf(@", depth=$depth");
