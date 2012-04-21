@@ -86,10 +86,10 @@ namespace libvoxelpress.etc {
             }
 
             public Val? pull_value(Key key) {
-                if (low_mask && low.key == key) {
+                if (low_mask && cmp(low.key, key) == 0) {
                     return low.value;
                 }
-                else if (high_mask && high.key == key) {
+                else if (high_mask && cmp(high.key, key) == 0) {
                     return high.value;
                 }
                 else {
@@ -164,10 +164,8 @@ namespace libvoxelpress.etc {
                 }
                 // key not found, so create it and return it.
                 var cap = encapsulate(key);
-                if (push(cap)) {
-                    return cap.value;
-                }
-                return null;
+                push(cap);
+				return cap.value;
             }
 
             public void on_bubble(Object _pushed, Object _next) {
@@ -295,9 +293,7 @@ namespace libvoxelpress.etc {
         }
 
 
-        private BTreeHead<Key,Val> head;
-		public Capsule<Key,Val> low { get; private set; default=null; }
-		public Capsule<Key,Val> high { get; private set; default=null; }
+        public BTreeHead<Key,Val> head;
 		public int size { get { return head.size; } }
 
         public BTree(cmp_func<Key> cmp, creation_func on_create ) {
@@ -314,12 +310,6 @@ namespace libvoxelpress.etc {
 		
 		public void push(Key key, Val value) {
 			Capsule<Key,Val> cap = new Capsule<Key,Val>(key, value, head.cmp);
-			if (low == null || cap.cmp(low) < 0) {
-				low = cap;
-			}
-			if (high == null || cap.cmp(high) > 0) {
-				high = cap;
-			}
 			head.push(cap);
 		}
     }

@@ -17,16 +17,16 @@ namespace libvoxelpress.fragments {
         }
 
         public static int cmp_2D (Coordinate lhs, Coordinate rhs) {
-            if (lhs.x < rhs.x) {
-                return -1;
-            }
-            else if (lhs.x > rhs.x) {
-                return 1;
-            }
-			else if (lhs.y < rhs.y) {
+            if (lhs.y < rhs.y) {
                 return -1;
             }
             else if (lhs.y > rhs.y) {
+                return 1;
+            }
+			else if (lhs.x < rhs.x) {
+                return -1;
+            }
+            else if (lhs.x > rhs.x) {
                 return 1;
             }
             else {
