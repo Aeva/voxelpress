@@ -95,7 +95,7 @@ namespace voxelcore {
 
 				stdout.printf(" # vector stage complete:\n");
 				bool layer_shown = false;
-				int z = min.z+0;
+				int z = min.z+27;
 				var layer = vector_stage.debug.layers.fetch(z);
 				if (layer != null) {
 					string buf = "";
