@@ -14,7 +14,7 @@ COMMON_VFLAGS = --pkg gee-1.0 --pkg gio-2.0 --pkg gmodule-2.0
 PLUGIN_VFLAGS = bin/libvoxelpress.vapi -C
 PLUGIN_CFLAGS = -shared -fPIC $$(pkg-config --cflags --libs glib-2.0 gmodule-2.0 gee-1.0 gio-2.0) -I./bin libvoxelpress.so
 LIBVPRESS_VFLAGS = --library=libvoxelpress -H bin/libvoxelpress.h -X -lm -X -fPIC -X -shared -o libvoxelpress.so
-VOXELCORE_VFLAGS = --thread bin/libvoxelpress.vapi -X libvoxelpress.so -X -I./bin -o bin/voxelpress
+VOXELCORE_VFLAGS = --thread bin/libvoxelpress.vapi --pkg json-glib-1.0 -X libvoxelpress.so -X -I./bin -o bin/voxelpress
 
 # source code files
 LIBVPRESS_SRC = $(libvp)/debug.vala \
@@ -31,6 +31,7 @@ VOXELCORE_SRC = $(vcore)/plugin_repository.vala \
 		$(vcore)/voxel_stage.vala \
 		$(vcore)/vector_fragmentation.vala \
 		$(vcore)/threading.vala \
+		$(vcore)/export_demo.vala \
 		$(vcore)/voxelcore.vala
 
 # plugin specific stuff

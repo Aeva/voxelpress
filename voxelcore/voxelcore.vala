@@ -77,9 +77,22 @@ namespace voxelcore {
 		};
 		entries.resize(entries.length + 1); // crashes if you don't do this
 
-		// Configure the pipeline
+		// Initialize pipeline stages
 		var import_stage = new ImportStage(plugins_path);
 		var vector_stage = new VectorStage(plugins_path, import_stage);
+
+		// Setup option context & parse options
+		var options = new OptionContext("file...");
+		options.add_main_entries(entries, null);
+		options.add_group(vector_stage.get_plugin_options());
+		try {
+			options.parse(ref args);
+		} catch (OptionError err) {
+			stdout.printf("Option error...?\n");
+			return 1;
+		}
+
+		// Configure the pipeline
 		import_stage.done.connect(() => {
 				var count = import_stage.face_count;
 				stdout.printf(@" # triangles imported: $count\n");
@@ -90,50 +103,37 @@ namespace voxelcore {
 				var min = vector_stage.min;
 				var max = vector_stage.max;
 				var width = max.x - min.x;
-				var depth = max.y - min.y;
-				var height = max.z - min.z;
+				var length = max.y - min.y;
+				var depth = max.z - min.z;
 
-				stdout.printf(" # vector stage complete:\n");
-				bool layer_shown = false;
-				int z = min.z+27;
-				var layer = vector_stage.debug.layers.fetch(z);
-				if (layer != null) {
-					string buf = "";
-					for (int x=min.x; x<=max.x; x+=1) {
-						buf += " ==> | ";
-						for (int y=min.y; y<=max.y; y+=1) {
-							Fragment? pick = layer.data.fetch(new Coordinate(x, y, z));
-							if (pick == null) {
-								buf += ".";
-							}
-							else {
-								buf += "#";
-							}
+				int[] data = {};
+				for (int z=min.z; z<=max.z; z+=1) {
+					var layer = vector_stage.debug.layers.fetch(z);
+
+					for (int y=min.y; y<=max.y; y+=1) {
+						for (int x=max.x; x<=max.x; x+=1) {
+							Fragment? pick = layer.data.fetch(new Coordinate(x,y,z));
+							data += pick != null ? 1 : 0;
 						}
-					buf += "\n";
 					}
-					stdout.printf(buf);
 				}
-				else {
-					stdout.printf("No layer at z=%s\n", z.to_string());
-				}
-				
+
+				stdout.printf(" - data size=%s\n", data.length.to_string());
 				stdout.printf(@" - width=$width");
-				stdout.printf(@", depth=$depth");
-				stdout.printf(@", height=$height\n");
+				stdout.printf(@", length=$length");
+				stdout.printf(@", depth=$depth\n");
+
+				var file = File.new_for_path("../scratch/test.json");
+				if (file.query_exists ()) {
+					file.delete ();
+				}
+				var OUT = new DataOutputStream(file.create(FileCreateFlags.REPLACE_DESTINATION));
+				OUT.put_string(json_dump(width,length,depth,1,1,1,encode(data)));
+
 			});
 
-		// Setup option context:
-		var options = new OptionContext("file...");
-		options.add_main_entries(entries, null);
-
-		// Add additional option groups:
-		options.add_group(vector_stage.get_plugin_options());
-
-		
-		// Parse options and begin processing, if applicable.
+		// Start this fancy thing up!
 		try {
-			options.parse(ref args);
 			if (out_file == "") {
 				stdout.printf("No outfile given, nothing done.\n");
 				return 1;
