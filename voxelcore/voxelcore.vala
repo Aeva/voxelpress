@@ -103,6 +103,42 @@ namespace voxelcore {
 				var min = vector_stage.min;
 				var max = vector_stage.max;
 				var width = max.x - min.x;
+				var depth = max.y - min.y;
+				var height = max.z - min.z;
+
+				stdout.printf(" # vector stage complete:\n");
+				bool layer_shown = false;
+				int z = min.z+27;
+				var layer = vector_stage.debug.layers.fetch(z);
+				if (layer != null) {
+					string buf = "";
+					for (int x=min.x; x<=max.x; x+=1) {
+						buf += " ==> | ";
+						for (int y=min.y; y<=max.y; y+=1) {
+							Fragment? pick = layer.data.fetch(new Coordinate(x, y, z));
+							if (pick == null) {
+								buf += ".";
+							}
+							else {
+								buf += "#";
+							}
+						}
+					buf += "\n";
+					}
+					stdout.printf(buf);
+				}
+				else {
+					stdout.printf("No layer at z=%s\n", z.to_string());
+				}
+				
+				stdout.printf(@" - width=$width");
+				stdout.printf(@", depth=$depth");
+				stdout.printf(@", height=$height\n");
+			});
+		vector_stage.done.connect(() => {
+				var min = vector_stage.min;
+				var max = vector_stage.max;
+				var width = max.x - min.x;
 				var length = max.y - min.y;
 				var depth = max.z - min.z;
 
@@ -118,17 +154,20 @@ namespace voxelcore {
 					}
 				}
 
+				/*
 				stdout.printf(" - data size=%s\n", data.length.to_string());
 				stdout.printf(@" - width=$width");
 				stdout.printf(@", length=$length");
 				stdout.printf(@", depth=$depth\n");
-
+				*/
 				var file = File.new_for_path("../scratch/test.json");
 				if (file.query_exists ()) {
 					file.delete ();
 				}
 				var OUT = new DataOutputStream(file.create(FileCreateFlags.REPLACE_DESTINATION));
 				OUT.put_string(json_dump(width,length,depth,1,1,1,encode(data)));
+
+				stdout.printf("----> Exported json file to scratch folder\n");
 
 			});
 
