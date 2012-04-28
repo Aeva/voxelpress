@@ -108,13 +108,13 @@ namespace voxelcore {
 
 				stdout.printf(" # vector stage complete:\n");
 				bool layer_shown = false;
-				int z = min.z+27;
+				int z = min.z+(height/3*2)+4;
 				var layer = vector_stage.debug.layers.fetch(z);
 				if (layer != null) {
 					string buf = "";
-					for (int x=min.x; x<=max.x; x+=1) {
+					for (int y=max.y; y>=min.y; y-=1) {
 						buf += " ==> | ";
-						for (int y=min.y; y<=max.y; y+=1) {
+						for (int x=min.x; x<=max.x; x+=1) {
 							Fragment? pick = layer.data.fetch(new Coordinate(x, y, z));
 							if (pick == null) {
 								buf += ".";
@@ -142,32 +142,33 @@ namespace voxelcore {
 				var length = max.y - min.y;
 				var depth = max.z - min.z;
 
-				int[] data = {};
+				int[] data = new int[(width+1)*(length+1)*(depth+1)];
+				int i = 0;
 				for (int z=min.z; z<=max.z; z+=1) {
 					var layer = vector_stage.debug.layers.fetch(z);
-
 					for (int y=min.y; y<=max.y; y+=1) {
-						for (int x=max.x; x<=max.x; x+=1) {
+						for (int x=min.x; x<=max.x; x+=1) {
 							Fragment? pick = layer.data.fetch(new Coordinate(x,y,z));
-							data += pick != null ? 1 : 0;
+							if (pick != null) {
+								data[i] = 1;
+							} else {
+								data[i] = 0;
+							}
+							i += 1;
 						}
 					}
 				}
 
-				/*
 				stdout.printf(" - data size=%s\n", data.length.to_string());
-				stdout.printf(@" - width=$width");
-				stdout.printf(@", length=$length");
-				stdout.printf(@", depth=$depth\n");
-				*/
-				var file = File.new_for_path("../scratch/test.json");
-				if (file.query_exists ()) {
-					file.delete ();
+
+				var file = File.new_for_path("../test.json");
+				if (file.query_exists()) {
+					file.delete();
 				}
 				var OUT = new DataOutputStream(file.create(FileCreateFlags.REPLACE_DESTINATION));
-				OUT.put_string(json_dump(width,length,depth,1,1,1,encode(data)));
-
-				stdout.printf("----> Exported json file to scratch folder\n");
+				OUT.put_string(json_dump(width+1, length+1, depth+1, 1, 1, 1, encode(data)));
+				
+				stdout.printf(" # Exported json file to scratch folder\n");
 
 			});
 

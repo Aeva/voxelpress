@@ -24,7 +24,9 @@ namespace voxelcore {
 	
 	
 	public string encode (int[] data) {
-		uchar[] raw = {};
+		double data_len = (double)data.length;
+		uchar[] raw = new uchar[((int)Math.ceil(data_len/7))];
+		int k = 0;
 		uchar working = 0;
 		int period = 0;
 		
@@ -34,7 +36,14 @@ namespace voxelcore {
 			}
 			period += 1;
 			if (period >= 7 | i+1 == data.length) {
-				raw += working;
+				if (k < raw.length) {
+					raw[k] = working;
+					k+=1;
+				}
+				else {
+					stdout.printf(" ! Buffer to small on encode\n");
+					break;
+				}
 				working = 0;
 				period = 0;
 			}
