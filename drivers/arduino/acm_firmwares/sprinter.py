@@ -12,6 +12,7 @@ class SprinterReprap(ReprapACM):
         info = self.gcode("M115")
         for key, value in self.parse_value_pairs(info[0]).items():
             self.info[key] = value
+
         _uuid = uuid.UUID(info[1].strip())
         if _uuid != uuid.UUID(int=0):
             self.info["uuid"] = _uuid

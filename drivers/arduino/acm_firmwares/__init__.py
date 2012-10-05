@@ -5,7 +5,7 @@ def select_firmware(connection):
     Returns None if no match is found."""
 
     found = None
-    
+
     if connection.motd.count("Sprinter"):
         from .sprinter import SprinterReprap
         found = SprinterReprap(connection)

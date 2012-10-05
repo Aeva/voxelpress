@@ -8,6 +8,12 @@ class ReprapKind():
     def __init__(self, *args, **kargs):
         pass
 
+    def shutdown(self, disconnected=False):
+        """Callback used to turn off the backend and release any
+        resources."""
+
+        pass
+
     def parse_value_pairs(self, response_str):
         """Takes a response from the printer and parses out value
         pairs.  Returns a dictionary."""

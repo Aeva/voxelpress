@@ -15,6 +15,12 @@ class ReprapACM(ReprapKind):
         self.info["uuid"] = self.__serial.make_uuid(firmware)
         ReprapKind.__init__(self, *args, **kargs)
 
+    def shutdown(self, disconnected=False):
+        """Callback used to turn off the backend and release any
+        resources."""
+
+        self.__serial.disconnect(disconnected)
+
     def gcode(self, line):
         """Send a line of gcode to the printer, and returns data if
         applicable."""

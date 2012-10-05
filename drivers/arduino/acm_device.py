@@ -15,9 +15,10 @@ class AcmDevice:
         if not (self.__connection.readable() and self.__connection.writable()):
             raise IOError("Insufficient read/write permissions for port %s." % port)
 
-    def disconnect(self):
+    def disconnect(self, disconnected=False):
         """Close the serial connection."""
-        self.__connection.flushOutput()
+        if not disconnected:
+            self.__connection.flushOutput()
         self.__connection.close()
 
     def flush(self):
