@@ -1,4 +1,6 @@
 bin/
+printers/
+scratch/
 test_voxelpress.sh
 *.pyc
 *~
