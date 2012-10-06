@@ -1,2 +1,5 @@
 bin/
 test_voxelpress.sh
+*.pyc
+*~
+*#
