@@ -11,6 +11,7 @@ def CONNECT_HW_EVENTS(voxelpress):
         __UDEV_CLIENT.connect(
             "uevent", __create_callback(voxelpress), None)
         __ATTACHED = True
+        __discover_hardware(voxelpress)
 
 
 def __create_callback(voxelpress):
@@ -31,3 +32,7 @@ def __create_callback(voxelpress):
             voxelpress.hw_disconnect_event(usb_path)
 
     return callback
+
+
+def __discover_hardware(voxelpress):
+    pass

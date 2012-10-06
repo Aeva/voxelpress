@@ -1,5 +1,5 @@
 bin/
-printers/
+settings/
 scratch/
 test_voxelpress.sh
 *.pyc

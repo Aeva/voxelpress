@@ -41,7 +41,6 @@ class SerialDevice(DeviceKind):
 
         for baud in self.baud_rates[::-1]:
             try:
-                print baud
                 self.driver = self.__detect_driver(baud)
                 if self.driver:
                     self.__baud = baud
