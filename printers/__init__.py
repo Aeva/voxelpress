@@ -1,5 +1,4 @@
 import json, os
-import dbus, dbus.service
 
 
 class PrintJob():
@@ -11,7 +10,7 @@ class PrintJob():
         self.job_file = None
 
 
-class VoxelpressPrinter(dbus.service.Object):
+class VoxelpressPrinter():
     
     def __init__(self, uuid):
         self.__uuid = uuid
