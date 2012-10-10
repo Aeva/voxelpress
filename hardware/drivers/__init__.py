@@ -26,6 +26,38 @@ DRIVER_REGISTRY = __find_installed_drivers()
 
 
 
+class DeviceDriver():
+    def __init__(self, uri, device_fileob):
+        self.__uri = uri
+        self.__defs = DRIVER_REGISTRY[uri]
+        self.__device = device_fileob
+
+
+    def __call(self, name, config, cmd_args=[]):
+        if self.__defs.has_key(name):
+            old_path = os.getcwd()
+            os.chdir(os.path.join("hardware/drivers/", self.__uri))
+            _args = self.__defs[name] + cmd_args
+            _environ = {
+                "PRINTER_CONFIG" : json.dumps(config)
+                }
+            proc = subprocess.Popen(
+                _args, env=_environ, stdin=self.__device, stdout=self.__device)
+            proc.communicate()
+            os.chdir(old_path)
+
+
+    def warm_up(self, printer_config):
+        self.__call("warmup cmd", printer_config)
+        print "...done"
+ 
+
+    def run_job(self, printer_config, job_path):
+        self.__call("print cmd", printer_config, cmd_args=[job_path])
+        print "...done"
+    
+
+
 
 def select_driver(hint, connect):
     """Given a hint and a file object, run each applicable driver's
@@ -36,7 +68,7 @@ def select_driver(hint, connect):
         if not driver["backend"] == hint:
             continue
         old_dir = os.getcwd()
-        arguments = driver["detect cmd"].split(" ")
+        arguments = driver["detect cmd"]
         fileob = connect()
         try:
             os.chdir(os.path.join("hardware/drivers", namespace))

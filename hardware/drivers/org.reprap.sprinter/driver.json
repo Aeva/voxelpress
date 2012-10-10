@@ -1,7 +1,7 @@
 {"backend" : "serial",
- "detect cmd": "python detect.py",
- "print cmd" : "python runjob.py",
- "warmup cmd": "python warmup.py",
+ "detect cmd": ["python", "detect.py"],
+ "print cmd" : ["python", "runjob.py"],
+ "warmup cmd": ["python", "warmup.py"],
  "manual mode": 0,
  "job format" : "gcode",
  "constants" : {

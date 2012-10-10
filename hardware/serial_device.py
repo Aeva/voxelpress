@@ -24,6 +24,8 @@ class SerialDevice(DeviceKind):
         self.__path = None
         self.__baud = None
         self.__usb = None
+        self.__com = None
+        self.state = "busy"
 
 
     def __detect_driver(self, baud):
@@ -34,6 +36,26 @@ class SerialDevice(DeviceKind):
             return Serial(self.__path, baud)
 
         return drivers.select_driver("serial", connect)
+
+
+    def warm_up(self, config):
+        """Notifies the driver to run any setup code."""
+
+        if not self.__com:
+            self.__com = Serial(self.__path, self.__baud)
+        self.state = "busy"
+        driver = drivers.DeviceDriver(self.driver, self.__com)
+        driver.warm_up(config)
+        self.state = "ready"
+
+    
+    def run_job(self, config, job_file):
+        """Runs a print job."""
+
+        self.state = "busy"
+        driver = drivers.DeviceDriver(self.driver, self.__com)
+        driver.run_job(config, job_file)
+        self.state = "jammed"
         
 
     def on_connect(self, tty_path):
@@ -45,6 +67,7 @@ class SerialDevice(DeviceKind):
                 self.driver = self.__detect_driver(baud)
                 if self.driver:
                     self.__baud = baud
+                    self.state = "ready"
                     break
             except IOError:
                 continue

@@ -15,7 +15,6 @@ def CONNECT_HW_EVENTS(voxelpress):
 
 
 def SCAN_HW(voxelpress):
-    print "DEBUG: hw scan"
     for device in __UDEV_CLIENT.query_by_subsystem("tty"):
         hw_info = device.get_property("ID_SERIAL")
         if hw_info:

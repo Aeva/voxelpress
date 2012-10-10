@@ -19,8 +19,8 @@ class VoxelpressServer(dbus.service.Object):
     def __init__(self, main_loop):
         self.__loop = main_loop
         namespace = "org.voxelpress.daemon"
-        #bus_name = dbus.service.BusName(namespace, bus=dbus.SessionBus())
-        #dbus.service.Object.__init__(self, bus_name, "/" + namespace.replace(".", "/"))
+        bus_name = dbus.service.BusName(namespace, bus=dbus.SessionBus())
+        dbus.service.Object.__init__(self, bus_name, "/" + namespace.replace(".", "/"))
         self.devices = {}
         self.printers = {}
 
@@ -71,17 +71,22 @@ class VoxelpressServer(dbus.service.Object):
             device = self.devices[hw_path]
             device.on_disconnect()
             del self.devices[hw_path]
-            print "Printer disconnected:"
-            print "  driver:", device.driver
-            print "    hwid:", device.hw_path
-            print "    uuid:", device.uuid
-
             self.printers[device.uuid].on_disconnect()
 
 
-    @dbus.service.method("org.voxelpress.daemon")
-    def hello(self):
-        return "Hello,World!"
+    @dbus.service.method("org.voxelpress.daemon", out_signature='s')
+    def list_printers(self):
+        found = [(str(p.uuid), p.name, p.get_state()) for p in self.printers.values()]
+        return json.dumps(found)
+
+
+    @dbus.service.method("org.voxelpress.daemon", in_signature='s')
+    def cue_job(self, json_args):
+        named_printer, job_path = json.loads(json_args)
+
+        for printer in self.printers.values():
+            if printer.name == named_printer:
+                printer.pdq_print_job(job_path)
 
 
 if __name__ == "__main__":
