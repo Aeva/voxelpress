@@ -129,10 +129,21 @@ class VoxelpressPrinter:
         for config in pipeline:
             self.pipeline_config[config["filter"]] = config
 
+    def request_job(self, mime_type, file_path, config):
+        """
+        Called to (attempt to) start a print job.
+        """
+
+        if self.state == 1:
+            # FIXME actually run the job
+            self.state = 2
+
     def on_connect(self, device_config):
         self.__load_config()
+        self.state = 1
         print "Printer connected:", self.name
 
     def on_disconnect(self):
         self.__save_config()
+        self.state = 0
         print "Printer disconnected:", self.name

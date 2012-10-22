@@ -75,7 +75,7 @@ class HardwareMonitor:
 class HardwareSubprocess:
     
     def __init__(self, state, hint, usb_path, tty_path=None, hw_info=None):
-        self.__vpd = vpd = dbus.SessionBus().get_object(
+        self.__vpd = dbus.SessionBus().get_object(
             'org.voxelpress', '/org/voxelpress')
         
         if state == "connect":
