@@ -33,10 +33,13 @@ VPD = dbus.SessionBus().get_object('org.voxelpress', '/org/voxelpress')
 
 
 
-def vpd_call(method, *args):
-    method = VPD.get_dbus_method(method)
+def vpd_call(method, *args, **kwords):
+    method = VPD.get_dbus_method(method, 'org.voxelpress.api')
     if len(args) == 0:
-        return method()
+        if len(kwords.keys()):
+            return method(json.dumps(kwords))
+        else:
+            return method()
     elif len(args) == 1:
         return method(args[0])
     else:
@@ -59,7 +62,7 @@ def list_printers(args=None):
         print " - {0} ( {1} )".format(name, state)
 
 
-def request_job(args):
+def request_print(args):
     printers = lookup_all()
     selected = None
     if args.p:
@@ -76,8 +79,12 @@ def request_job(args):
         exit()
     else:
         if os.path.isfile(args.file):
-            vpd_call("request_job", selected["uuid"], None, None, args.file)
-            print "Job sent to printer."
+            pipeline = json.loads(vpd_call("get_pipeline", selected["uuid"], args.file))
+            print vpd_call("request_print", 
+                           uuid = selected["uuid"],
+                           config = pipeline,
+                           env = dict(os.environ),
+                           path = args.file)
         else:
             print "No such file:", args.file
         
@@ -98,7 +105,7 @@ if __name__ == "__main__":
         "print", help="Send a print job to a printer.")
     parser_print.add_argument("file")
     parser_print.add_argument("-p", metavar="printer")
-    parser_print.set_defaults(func=request_job)
+    parser_print.set_defaults(func=request_print)
 
     args = parser.parse_args()
     args.func(args)

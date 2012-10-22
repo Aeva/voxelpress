@@ -24,6 +24,8 @@ LIBPATH = os.path.split(os.path.abspath(__file__))[0]
 import glob
 import uuid
 import json
+import pickle
+from job_handler import wake_up, stash_file, PrintJob
 
 
 PRINTER_STATES = (
@@ -32,21 +34,6 @@ PRINTER_STATES = (
     "printing",
     "error",
     )
-
-JOB_STATES = (
-    "pending",
-    "printing",
-    "error",
-)
-
-
-class PrintJob:
-    
-    def __init__(self, file_path, mime_type):
-        self.mime_type = mime_type
-        self.file_path = file_path
-        self.queue_file = ""
-        self.state = 0
 
 
 class VoxelpressPrinter:
@@ -57,7 +44,7 @@ class VoxelpressPrinter:
         self.state = 0
         self.hardware_config = {}
         self.pipeline_config = {}
-        self.__queue = []
+        self.queue = []
 
         config_name = str(uuid) + ".json"
         self.__config_path = os.path.join(
@@ -107,7 +94,7 @@ class VoxelpressPrinter:
             self.pipeline_config[filter_name] = defaults
         return self.pipeline_config[filter_name]
 
-    def build_pipeline(self, mime_type):
+    def get_pipeline(self, mime_type):
         """
         Creates a basic configuration for a given print job mime type.
         This is indirectly called by the user interface prior to
@@ -115,12 +102,13 @@ class VoxelpressPrinter:
         """
 
         # FIXME totally cheating by hardcoding a pipeline =(
-        return map(self.__get_or_load_filter, [
-            "org.slic3r",
-            "org.reprap.sprinter",
-            ])
+        pipeline = [
+            self.__get_or_load_filter("org.slic3r"),
+            self.__get_or_load_filter("org.reprap.sprinter"),
+            ]
+        return pipeline 
 
-    def update_filter_configs(self, pipeline):
+    def __set_pipeline(self, pipeline):
         """
         Updates the stored settings for individual filters.  This
         would be called after a print job is created.
@@ -129,17 +117,31 @@ class VoxelpressPrinter:
         for config in pipeline:
             self.pipeline_config[config["filter"]] = config
 
-    def request_job(self, mime_type, file_path, config):
+    def request_job(self, path, config, context_env):
         """
         Called to (attempt to) start a print job.
         """
+        
+        self.__set_pipeline(config)
+        tmp_file = stash_file(self.__uuid, path)
+        job = PrintJob(self.__uuid, path, tmp_file, config, context_env)
 
-        if self.state == 1:
-            # FIXME actually run the job
+        if self.state == 0:
+            return "Printer is offline."
+
+        elif self.state == 1:
             self.state = 2
+            self.queue.append(job)
+            wake_up(self.__uuid)
+            return "Sent job to printer."
+
+        else:
+            self.queue.append(job)
+            return "Job has been queued."
 
     def on_connect(self, device_config):
         self.__load_config()
+        self.hardware_config = device_config
         self.state = 1
         print "Printer connected:", self.name
 

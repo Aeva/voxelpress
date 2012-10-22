@@ -25,6 +25,7 @@ sys.path.insert(1, os.path.abspath(os.path.join(sys.argv[0], "../../lib/voxelpre
 import glob
 import uuid
 import json
+import pickle
 import daemon
 import gobject
 import dbus, dbus.service
@@ -35,7 +36,7 @@ try:
 except ImportError:
     raise
 
-from printer_kind import VoxelpressPrinter, PrintJob, PRINTER_STATES, JOB_STATES
+from printer_kind import VoxelpressPrinter, PRINTER_STATES
 
 
 
@@ -57,6 +58,18 @@ class VoxelpressServer(dbus.service.Object):
             puuid = uuid.UUID(os.path.split(path)[1][:-5])
             self.printers[puuid] = VoxelpressPrinter(puuid)
 
+    def __get_printer(self, printer_id):
+        """Select a printer from its printer_id."""
+        uuid_ = printer_id
+        if type(uuid_) in [unicode, dbus.String, str]:
+            uuid_ = uuid.UUID(uuid_)
+        if self.printers.has_key(uuid_):
+            return self.printers[uuid_]
+        else:
+            # FIXME this should probably be an exception since the
+            # uuid should almost never be determined by user input.
+            return None
+
     @dbus.service.method("org.voxelpress.events", in_signature='s')
     def on_connect(self, device_info):
         config = json.loads(device_info)
@@ -77,42 +90,56 @@ class VoxelpressServer(dbus.service.Object):
             del self.devices[usb_path]
             self.printers[printer_uuid].on_disconnect()
 
-    @dbus.service.method("org.voxelpress", out_signature='s')
+    @dbus.service.method("org.voxelpress.util", out_signature='s', in_signature='s')
+    def get_hw_config(self, printer_id):
+        printer = self.__get_printer(printer_id)
+        return json.dumps(printer.hardware_config)
+
+    @dbus.service.method("org.voxelpress.util", out_signature='s', in_signature='s')
+    def dump_queue(self, printer_id):
+        printer = self.__get_printer(printer_id)
+        return pickle.dumps(printer.queue)
+
+    @dbus.service.method("org.voxelpress.api", out_signature='s')
     def get_printers(self):
         """Get a list of all known printers, connected or
         otherwise."""
         return json.dumps(map(str, self.printers.keys()))
 
-    @dbus.service.method("org.voxelpress", in_signature='s', out_signature='s')
+    @dbus.service.method("org.voxelpress.api", in_signature='s', out_signature='s')
     def get_printer_info(self, printer_uuid):
         """Request information about a specific printer."""
 
-        printer = self.printers[uuid.UUID(printer_uuid)]
+        printer = self.__get_printer(printer_uuid)
         return json.dumps({
                 "uuid" : printer_uuid,
                 "name" : printer.name,
                 "state" : printer.state,
                 })
 
-    @dbus.service.method("org.voxelpress", in_signature='s', out_signature='s')
+    @dbus.service.method("org.voxelpress.api", in_signature='s', out_signature='s')
     def get_pipeline(self, json_args):
         """Returns a possible pipeline configuration.  Should be
         called before a print job is requested to provide default
         settings for the printer."""
 
-        printer_uuid, mime_type = json.loads(json_args)
-        printer = self.printers[uuid.UUID(printer_uuid)]
-        return json.dumps(printer.build_pipeline(mime_type))
-        
-    @dbus.service.method("org.voxelpress", in_signature='s')
-    def request_job(self, json_args):
-        """Request a print job."""
+        printer_uuid, path = json.loads(json_args)
+        printer = self.__get_printer(printer_uuid)
+        mime_type = "model/stl+binary" # FIXME do mimetype discovery
+        return json.dumps(printer.get_pipeline(mime_type))
 
-        printer_uuid, config, mime_type, file_path = json.loads(json_args)
-        printer = self.printers[uuid.UUID(printer_uuid)]
-        if config:
-            printer.update_filter_configs(config)
-        printer.request_job(mime_type, file_path, config)
+    @dbus.service.method("org.voxelpress.api", in_signature='s', out_signature='s')
+    def request_print(self, json_blob):
+        """Requests a print job."""
+
+        req = json.loads(json_blob)
+
+        config = req["config"]
+        environ = req["env"]
+        path = req["path"]
+
+        printer = self.__get_printer(req["uuid"])
+        return printer.request_job(path, config, environ)
 
 
 if __name__ == "__main__":
