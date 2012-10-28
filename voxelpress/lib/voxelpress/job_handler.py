@@ -128,7 +128,8 @@ class PrintJob:
 
         for process in pipeline:
             ret = process.wait()
-            debug(process.stderr.readlines())
+            for msg in process.stderr.readlines():
+                debug(msg)
             if ret != 0:
                 self.state = 2
                 break

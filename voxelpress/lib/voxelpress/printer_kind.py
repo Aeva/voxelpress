@@ -116,6 +116,7 @@ class VoxelpressPrinter:
         
         for config in pipeline:
             self.pipeline_config[config["filter"]] = config
+        self.__save_config()
 
     def request_job(self, path, config, context_env):
         """
