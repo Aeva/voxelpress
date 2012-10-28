@@ -20,7 +20,8 @@
 
 import os
 import sys
-sys.path.insert(1, os.path.abspath(os.path.join(sys.argv[0], "../../lib/voxelpress")))
+sys.path.insert(1, os.path.abspath(os.path.join(
+            sys.argv[0], "../../lib/voxelpress")))
 
 import glob
 import uuid
@@ -46,7 +47,9 @@ class VoxelpressServer(dbus.service.Object):
     def __init__(self):
         namespace = "org.voxelpress"
         bus_name = dbus.service.BusName(namespace, bus=dbus.SessionBus())
-        dbus.service.Object.__init__(self, bus_name, "/" + namespace.replace(".", "/"))
+        dbus.service.Object.__init__(
+            self, bus_name, "/" + namespace.replace(".", "/"))
+
         self.devices = {} # is this still needed?
         self.printers = {}
 
@@ -90,12 +93,14 @@ class VoxelpressServer(dbus.service.Object):
             del self.devices[usb_path]
             self.printers[printer_uuid].on_disconnect()
 
-    @dbus.service.method("org.voxelpress.util", out_signature='s', in_signature='s')
+    @dbus.service.method(
+        "org.voxelpress.util", out_signature='s', in_signature='s')
     def get_hw_config(self, printer_id):
         printer = self.__get_printer(printer_id)
         return json.dumps(printer.hardware_config)
 
-    @dbus.service.method("org.voxelpress.util", out_signature='s', in_signature='s')
+    @dbus.service.method(
+        "org.voxelpress.util", out_signature='s', in_signature='s')
     def dump_queue(self, printer_id):
         printer = self.__get_printer(printer_id)
         return pickle.dumps(printer.queue)
@@ -106,7 +111,8 @@ class VoxelpressServer(dbus.service.Object):
         otherwise."""
         return json.dumps(map(str, self.printers.keys()))
 
-    @dbus.service.method("org.voxelpress.api", in_signature='s', out_signature='s')
+    @dbus.service.method(
+        "org.voxelpress.api", in_signature='s', out_signature='s')
     def get_printer_info(self, printer_uuid):
         """Request information about a specific printer."""
 
@@ -117,7 +123,8 @@ class VoxelpressServer(dbus.service.Object):
                 "state" : printer.state,
                 })
 
-    @dbus.service.method("org.voxelpress.api", in_signature='s', out_signature='s')
+    @dbus.service.method(
+        "org.voxelpress.api", in_signature='s', out_signature='s')
     def get_pipeline(self, json_args):
         """Returns a possible pipeline configuration.  Should be
         called before a print job is requested to provide default
@@ -128,7 +135,8 @@ class VoxelpressServer(dbus.service.Object):
         mime_type = "model/stl+binary" # FIXME do mimetype discovery
         return json.dumps(printer.get_pipeline(mime_type))
 
-    @dbus.service.method("org.voxelpress.api", in_signature='s', out_signature='s')
+    @dbus.service.method(
+        "org.voxelpress.api", in_signature='s', out_signature='s')
     def request_print(self, json_blob):
         """Requests a print job."""
 
