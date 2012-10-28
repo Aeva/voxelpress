@@ -176,7 +176,8 @@ class printcore():
         if len(data)==0:
             return True
         self.clear=False
-        Thread(target=self._print).start()
+        #Thread(target=self._print).start()
+        self._print()
         return True
         
     def pause(self):

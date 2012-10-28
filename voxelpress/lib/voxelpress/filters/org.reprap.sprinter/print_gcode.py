@@ -29,25 +29,40 @@ PORT = CONFIG["hardware"]["tty_path"]
 
 
 def main(port, baud):
-    p = printercore(port, baud)
-    p.loud = False
+    print >> sys.stderr, "Attemping to print at {0} with baud {1}\n\n".format(
+        port, baud)
+    p = printcore(port, baud)
+    p.loud = True
     time.sleep(2)
-    
-    preface = [] # do things like home the printer
 
-    gcode = []    
-    for line in sys.stdin.readlines():
-        gcode.append(line.strip())
 
-    p.startprint(preface + gcode)
-    p.disconnect()
+    print >> sys.stderr, "###", "Building gcode stream..."
 
+    setup_codes = [
+        "G28", # home
+        "G0 X100 Y100",
+        "M116", # wait
+        "G28",
+        "M18", # stfu
+        
+
+        "M21", # init sd card
+        "M28 vppjob.gco", # begin write
+        ]
+
+    job_codes = [line.strip() for line in sys.stdin.readlines()]
+
+    teardown_codes = [
+        "M116",
+        "M29", # stop writing to sd card
+        #"M23 vppjob.gco", # select job
+        "M24", # start print
+        ]
+
+
+    print >> sys.stderr, "###", "Sending Gcode stream to printer..."
+    p.startprint(setup_codes + job_codes + teardown_codes)
+    print >> sys.stderr, "###", "Done printing!"
 
 if __name__ == "__main__":
-    for key, value in CONFIG["hardware"].items():
-        print >> sys.stderr, "==>", key, value
-
-    foo = sys.stdin.readlines()
-    print >> sys.stderr, "----> {0} lines".format(len(foo))
-    sys.exit(0)
-    #    sys.exit(main(PORT, BAUD))
+    sys.exit(main(PORT, BAUD))

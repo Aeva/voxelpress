@@ -75,7 +75,6 @@ def main():
         in_file.write(sys.stdin.read())
     
     slice(in_path, out_path, CONFIG, str(CPU_COUNT))
-    print >> sys.stderr, "slice finished?"
     count = 0
     with open(out_path, "rb") as out_file:
         for line in out_file.readlines():
@@ -86,7 +85,6 @@ def main():
         sys.stderr.write("FATAL: Slic3r failed?.\n")
         return 1
     else:
-        print >> sys.stderr, "Filter concluded..."
         return 0
 
 
