@@ -55,8 +55,8 @@ class HardwareMonitor:
 
     def __split(self, *args):
         """Spawn udev.py as a separate process and then return."""
-        _args = ["python", __file__] + list(args)
-        subprocess.Popen(_args, cwd=os.path.split(__file__)[0])
+        _args = ["python", __file__] + map(str, list(args))
+        subprocess.Popen(_args, cwd=os.path.split(__file__)[0])    
 
     def __scan(self):
         """Iterate over available serial ports and try to find repraps."""
