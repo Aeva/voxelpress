@@ -70,11 +70,12 @@ def main():
     tmp_dir = tempfile.mkdtemp()
     in_path = os.path.join(tmp_dir, "input.stl")
     out_path = os.path.join(tmp_dir, "output.gcode")
+
     with open(in_path, "wb") as in_file:
-        for line in sys.stdin.readlines():
-            in_file.write(line)
+        in_file.write(sys.stdin.read())
     
     slice(in_path, out_path, CONFIG, str(CPU_COUNT))
+    print >> sys.stderr, "slice finished?"
     count = 0
     with open(out_path, "rb") as out_file:
         for line in out_file.readlines():
@@ -85,6 +86,7 @@ def main():
         sys.stderr.write("FATAL: Slic3r failed?.\n")
         return 1
     else:
+        print >> sys.stderr, "Filter concluded..."
         return 0
 
 

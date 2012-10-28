@@ -23,6 +23,7 @@ import sys
 sys.path.insert(1, os.path.abspath(os.path.split(__file__)[0]))
 
 import json
+import shutil
 import pickle
 import subprocess
 import tempfile
@@ -77,6 +78,7 @@ def stash_file(printer_id, file_path):
     printer_dir = get_printer_dir(printer_id)
     tmp_dir = os.path.join(printer_dir, "queue")
     tmp_file = tempfile.mkstemp(dir=tmp_dir)
+    shutil.copyfile(file_path, tmp_file[1])
     return tmp_file[1]
 
 
@@ -116,7 +118,8 @@ class PrintJob:
                                  cwd=cwd, env=env,
                                  stdin=last,
                                  stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE
+                                 #stderr=subprocess.PIPE
+                                 stderr=sys.stderr
                                  ))
             last = pipeline[-1].stdout
         return pipeline
@@ -124,15 +127,21 @@ class PrintJob:
     def activate(self, hw_target):
         self.state = 1
         self.__tmpfile = open(self.tmp_path, "rb")
+        print >> sys.stderr, "Creating pipeline..."
         pipeline = self.__init_pipeline(hw_target)
 
+        count = 0
         for process in pipeline:
+            count += 1
+            print >> sys.stderr, "Waiting for filter #{0}...".format(count)
             ret = process.wait()
-            for msg in process.stderr.readlines():
-                debug(msg)
+            #for msg in process.stderr.readlines():
+            #    debug(msg)
             if ret != 0:
+                print >> sys.stderr, "Printer is now in an error state."
                 self.state = 2
                 break
+        print >> sys.stderr, "Job finished...?"
 
         if self.state == 1:
             self.state = 3
@@ -195,5 +204,5 @@ class PrintPipeline:
 if __name__ == "__main__":
     # this should only happen because this was launched as a
     # subprocess.
-
+    
     pipeline = PrintPipeline()

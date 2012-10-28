@@ -15,10 +15,12 @@
 # You should have received a copy of the GNU General Public License
 # along with Printrun.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
 import time
 from serial import Serial, SerialException
 from threading import Thread
 from select import error as SelectError
+
 
 class printcore():
     def __init__(self,port=None,baud=None):
@@ -49,9 +51,7 @@ class printcore():
         self.loud=False#emit sent and received lines to terminal
         self.greetings=['start','Grbl ']
         if port is not None and baud is not None:
-            #print port, baud
             self.connect(port, baud)
-            #print "connected\n"
         
         
     def disconnect(self):
@@ -97,15 +97,15 @@ class printcore():
                 line=self.printer.readline()
             except SelectError, e:
                 if 'Bad file descriptor' in e.args[1]:
-                    print "Can't read from printer (disconnected?)."
+                    print >> sys.stderr, "Can't read from printer (disconnected?)."
                     break
                 else:
                     raise
             except SerialException, e:
-                print "Can't read from printer (disconnected?)."
+                print >> sys.stderr, "Can't read from printer (disconnected?)."
                 break
             except OSError, e:
-                print "Can't read from printer (disconnected?)."
+                print >> sys.stderr, "Can't read from printer (disconnected?)."
                 break
 
             if(len(line)>1):
@@ -116,7 +116,7 @@ class printcore():
                     except:
                         pass
                 if self.loud:
-                    print "RECV: ",line.rstrip()
+                    print >> sys.stderr, "RECV: ",line.rstrip()
             if(line.startswith('DEBUG_')):
                 continue
             if(line.startswith(tuple(self.greetings)) or line.startswith('ok')):
@@ -280,7 +280,7 @@ class printcore():
         if(self.printer):
             self.sent+=[command]
             if self.loud:
-                print "SENT: ",command
+                print >> sys.stderr,"SENT: ",command
             if self.sendcb is not None:
                 try:
                     self.sendcb(command)
@@ -289,5 +289,5 @@ class printcore():
             try:
                 self.printer.write(str(command+"\n"))
             except SerialException, e:
-                print "Can't write to printer (disconnected?)."
+                print >> sys.stderr, "Can't write to printer (disconnected?)."
 
