@@ -43,9 +43,7 @@ def cleanup(tmp_path):
     os.removedirs(tmp_path)
 
 
-def slice(in_path, out_path, config_path, cpu_count, 
-          cwd="/home/aeva/sandbox/reprap/src/Slic3r/",
-          cmd="/home/aeva/sandbox/reprap/src/Slic3r/slic3r.pl"):
+def slice(in_path, out_path, config_path, cpu_count, cmd="slic3r"):
     """Call the slic3r executable."""
 
     args = [
