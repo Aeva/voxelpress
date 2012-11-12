@@ -25,21 +25,34 @@ namespace libvcm.voxel_model {
 	public interface VoxelKind: Object {
 	}
 
+
 	public interface VoxelModelKind: Object {
-		public abstract int layer_dpi { get; private set; }
-		public abstract int layer_height { get; private set; }
-		public abstract int build_width { get; private set; }
-		public abstract int build_length { get; private set; }
-		public abstract int build_height { get; private set; }
-		
-		public abstract VoxelKind get(int x, int y, int z);
+		public abstract double page_width { get; private set; }
+		public abstract double page_length { get; private set; }
+		public abstract double page_height { get; private set; }
+		public abstract double xy_res { get; private set; }
+		public abstract double z_res { get; private set; }
+		public abstract int model_width { get; private set; }
+		public abstract int model_length { get; private set; }
+		public abstract int model_height { get; private set; }
+		public abstract int min_x { get; private set; }
+		public abstract int max_x { get; private set; }
+		public abstract int min_y { get; private set; }
+		public abstract int max_y { get; private set; }
+		public abstract int min_z { get; private set; }
+		public abstract int max_z { get; private set; }
+		public abstract bool empty { get; private set; }
+
+		public abstract VoxelKind? get(int x, int y, int z);
 		public abstract void set(int x, int y, int z, VoxelKind voxel);
 	}
+
 	
 	public interface RasterLayerKind: Object {
 		public abstract VoxelKind? get(int x, int y);
 		public abstract void set(int x, int y, VoxelKind voxel);
 	}
+
 
 	public interface DataBlockKind: Object {
 		public abstract VoxelKind? get(int x, int y);
