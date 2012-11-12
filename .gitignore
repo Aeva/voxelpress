@@ -4,5 +4,6 @@ scratch/
 test_voxelpress.sh
 *.pyc
 libvcm/*.c
+libvcm/*.out
 *~
 *#
