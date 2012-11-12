@@ -1,54 +1,118 @@
-using Gee
+/*
+
+  This file is part of VoxelPress.
+
+  VoxelPress is free software: you can redistribute it and/or modify it
+  under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  VoxelPress is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with VoxelPress.  If not, see <http://www.gnu.org/licenses/>.
+
+  Have a nice day!
+
+*/
+
+
+using Gee;
+
 
 namespace libvcm.voxel_model {
+	public class VoxelModel: Object, VoxelModelKind {
+		public double page_width { get; private set; }  // x, in mm
+		public double page_length { get; private set; } // y, in mm
+		public double page_height { get; private set; } // z, in mm
 
-	public class VoxelModel: VoxelModelKind {
-		public int layer_dpi { get; private set; }
-		public int layer_height { get; private set; }
-		public int build_width { get; private set; }
-		public int build_length { get; private set; }
-		public int build_height { get; private set; }
+		// xy_res is dots per mm.
+		// For repraps, this would be 1/nozzel_radius.  The radius is
+		// used instead of the diameter so as to make insetting simple.
+		public double xy_res { get; private set; }
 
-		public int block_count { get; private set; }
+		// z_res is layers per mm.
+		// For repraps, this would be 1/layer_thickness.
+		public double z_res { get; private set; }
+
+		// The following are in units of voxels.
+		public int model_width { get; private set; }
+		public int model_length { get; private set; }
+		public int model_height { get; private set; }
+		public int min_x { get; private set; }
+		public int max_x { get; private set; }
+		public int min_y { get; private set; }
+		public int max_y { get; private set; }
+		public int min_z { get; private set; }
+		public int max_z { get; private set; }
 		public int block_size { get; private set; }
-		public HashMap<int, RasterLayerKind> slices { get; private set; }
+		public bool empty { get; private set; }
 
-		public VoxelModel (int layer_dpi, int layer_height,
-						   int build_width, int build_length, 
-						   int build_height) {
-			this.layer_dpi = layer_dpi;
-			this.layer_height = layer_height;
-			this.build_width = build_width;
-			this.build_length = build_length;
-			this.build_height = build_height;
+		// Model data
+		public HashMap<int, RasterLayerKind> layers { get; set; }
 
-			var tmp = float(layer_height);
-			if (layer_width > layer_height) {
-				tmp = float(layer_width);
-			}
-			tmp *= layer_dpi;
-			this.block_size = 64; // a block is 64x64
-			this.block_count = Math.ceil(tmp/this.block_size);
 
-			this.slices = new HashMap<int, RasterLayerKind>();
+		public VoxelModel (double p_width, double p_length, double p_height,
+						   double xy_res, double z_res) {
+
+			layers = new HashMap<int, RasterLayerKind>();
+			this.xy_res = xy_res;
+			this.z_res = z_res;
+			page_width = p_width;
+			page_length = p_length;
+			page_height = p_height;
+
+			model_width = (int) (page_width * xy_res);
+			model_length = (int) (page_length * xy_res);
+			model_height = (int) (page_height * z_res);
+
+			block_size = 16;
+			empty = true;
 		}
 
-		public void set(int x, int y, int z, VoxelKind voxel) {
-			if (!slices.has_key(z)) {
-				slices[z] = new RasterLayer(block_size, block_count);
+
+		public new VoxelKind? get(int x, int y, int z) {
+			lock (layers) {
+				if (layers[z] == null) {
+					return null;
+				}
 			}
-			slices[z][x, y] = voxel;
+			// This bit is intentionally outside of the lock, since the
+			// layers themselves are thread safe
+			return layers[z][x,y];
 		}
 
-		public Voxelkind? get(int x, int y, int z) {
-			if (slices.has_key(z)) {
-				return slices[z][x,y];
-			}
-			else {
-				return null;
-			}
-		}		
-	}
 
-
+		public new void set(int x, int y, int z, VoxelKind voxel) {
+			lock (layers) {
+				if (empty) {
+					empty = false;
+					min_x = x;
+					max_x = x;
+					min_y = y;
+					max_y = y;
+					min_z = z;
+					max_z = z;
+				}
+				else {
+					min_x = x < min_x ? x : min_x;
+					max_x = x > max_x ? x : max_x;
+					min_y = y < min_y ? y : min_y;
+					max_y = y > max_y ? y : max_y;
+					min_z = z < min_z ? z : min_z;
+					max_z = z > max_z ? z : max_z;
+				}
+				if (layers[z] == null) {
+				layers[z] = new RasterLayer(
+					block_size, model_width, model_height);
+				}
+			}
+			// This bit is intentionally outside of the lock, since the
+			// layers themselves are thread safe
+			layers[z][x,y] = voxel;
+		}
+    }
 }
