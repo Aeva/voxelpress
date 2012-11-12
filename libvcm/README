@@ -1,3 +1,9 @@
 
 VCM --> "VoxelCore Model"
 
+
+Libvcm implements a data structure for storing voxel data, as
+optimized for 3D printing.  Libvcm will also include functionality for
+reading and writing such models to a file, as well as tools such as
+exporting a folder of .png files.
+
