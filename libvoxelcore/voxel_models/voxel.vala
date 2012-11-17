@@ -20,12 +20,12 @@
 */
 
 
-namespace libvcm.voxel_model {
+namespace libvoxelcore.voxel_model {
 
 
 	public class SimpleVoxel: Object, VoxelKind {
+		public MaterialKind? material { get; set; }
 	}
 
 
 }
-
