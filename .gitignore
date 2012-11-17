@@ -3,7 +3,9 @@ settings/
 scratch/
 test_voxelpress.sh
 *.pyc
-libvcm/*.c
-libvcm/*.out
+libvoxelcore/*.c
+libvoxelcore/*.out
+libvoxelcore/*/*.c
+libvoxelcore/*/*.out
 *~
 *#
