@@ -20,11 +20,15 @@
 */
 
 
-using Gee;
-using libvoxelcore.vector_model;
+using libvoxelcore.materials;
 
 
-namespace libvoxelcore.loaders {
+namespace libvoxelcore.vector_model {
+
+
+	public class Face: Object, FaceKind {
+		public VertexKind[] vertices { get; set; }
+	}
 
 
 }

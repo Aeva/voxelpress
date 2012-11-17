@@ -111,7 +111,7 @@ static void libvoxelcore_voxel_model_data_block_set_data (libvoxelcorevoxel_mode
 static libvoxelcorevoxel_modelVoxelKind* libvoxelcore_voxel_model_data_block_real_get (libvoxelcorevoxel_modelDataBlockKind* base, gint x, gint y);
 libvoxelcorevoxel_modelVoxelKind** libvoxelcore_voxel_model_data_block_get_data (libvoxelcorevoxel_modelDataBlock* self, int* result_length1, int* result_length2);
 static void libvoxelcore_voxel_model_data_block_real_set (libvoxelcorevoxel_modelDataBlockKind* base, gint x, gint y, libvoxelcorevoxel_modelVoxelKind* vox);
-static libvoxelcorevoxel_modelVoxelKind** _vala_array_dup2 (libvoxelcorevoxel_modelVoxelKind** self, int length);
+static libvoxelcorevoxel_modelVoxelKind** _vala_array_dup3 (libvoxelcorevoxel_modelVoxelKind** self, int length);
 static void libvoxelcore_voxel_model_data_block_finalize (GObject* obj);
 static void _vala_libvoxelcore_voxel_model_data_block_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void _vala_libvoxelcore_voxel_model_data_block_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
@@ -289,7 +289,7 @@ libvoxelcorevoxel_modelVoxelKind** libvoxelcore_voxel_model_data_block_get_data 
 }
 
 
-static libvoxelcorevoxel_modelVoxelKind** _vala_array_dup2 (libvoxelcorevoxel_modelVoxelKind** self, int length) {
+static libvoxelcorevoxel_modelVoxelKind** _vala_array_dup3 (libvoxelcorevoxel_modelVoxelKind** self, int length) {
 	libvoxelcorevoxel_modelVoxelKind** result;
 	int i;
 #line 25 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/data_block.vala"
@@ -326,7 +326,7 @@ static void libvoxelcore_voxel_model_data_block_set_data (libvoxelcorevoxel_mode
 #line 25 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/data_block.vala"
 	_tmp0__length2 = value_length2;
 #line 25 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/data_block.vala"
-	_tmp1_ = (_tmp0_ != NULL) ? _vala_array_dup2 (_tmp0_, _tmp0__length1 * _tmp0__length2) : ((gpointer) _tmp0_);
+	_tmp1_ = (_tmp0_ != NULL) ? _vala_array_dup3 (_tmp0_, _tmp0__length1 * _tmp0__length2) : ((gpointer) _tmp0_);
 #line 25 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/data_block.vala"
 	_tmp1__length1 = _tmp0__length1;
 #line 25 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/data_block.vala"

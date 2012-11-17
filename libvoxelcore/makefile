@@ -16,11 +16,18 @@ DEBUG_VFLAGS = -g --save-temps -o debug.out
 LIBVPRESS_SRC = materials/interfaces.vala \
 		materials/color_material.vala \
 		vector_models/interfaces.vala \
+		vector_models/vertex.vala \
+		vector_models/face.vala \
 		voxel_models/interfaces.vala \
 		voxel_models/raster_layer.vala \
 		voxel_models/data_block.vala \
 		voxel_models/voxel_model.vala \
-		voxel_models/voxel.vala 
+		voxel_models/voxel.vala \
+		loaders/interfaces.vala \
+		loaders/obj_loader.vala \
+		loaders/binary_stl_loader.vala \
+		loaders/ascii_stl_loader.vala \
+
 		#vector_models/*.vala
 
 

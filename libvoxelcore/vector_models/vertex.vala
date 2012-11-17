@@ -20,11 +20,18 @@
 */
 
 
-using Gee;
-using libvoxelcore.vector_model;
+using libvoxelcore.materials;
 
 
-namespace libvoxelcore.loaders {
+namespace libvoxelcore.vector_model {
+
+
+	public class Vertex: Object, VertexKind {
+		public double x { get; set; }
+		public double y { get; set; }
+		public double z { get; set; }
+		public MaterialKind? material { get; set; }
+	}
 
 
 }

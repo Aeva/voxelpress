@@ -165,7 +165,7 @@ libvoxelcorevoxel_modelDataBlock* libvoxelcore_voxel_model_data_block_new (gint 
 libvoxelcorevoxel_modelDataBlock* libvoxelcore_voxel_model_data_block_construct (GType object_type, gint block_size);
 GType libvoxelcore_voxel_model_data_block_get_type (void) G_GNUC_CONST;
 void libvoxelcore_voxel_model_data_block_kind_set (libvoxelcorevoxel_modelDataBlockKind* self, gint x, gint y, libvoxelcorevoxel_modelVoxelKind* voxel);
-static libvoxelcorevoxel_modelDataBlockKind** _vala_array_dup1 (libvoxelcorevoxel_modelDataBlockKind** self, int length);
+static libvoxelcorevoxel_modelDataBlockKind** _vala_array_dup2 (libvoxelcorevoxel_modelDataBlockKind** self, int length);
 static void libvoxelcore_voxel_model_raster_layer_finalize (GObject* obj);
 static void _vala_libvoxelcore_voxel_model_raster_layer_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void _vala_libvoxelcore_voxel_model_raster_layer_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
@@ -714,7 +714,7 @@ libvoxelcorevoxel_modelDataBlockKind** libvoxelcore_voxel_model_raster_layer_get
 }
 
 
-static libvoxelcorevoxel_modelDataBlockKind** _vala_array_dup1 (libvoxelcorevoxel_modelDataBlockKind** self, int length) {
+static libvoxelcorevoxel_modelDataBlockKind** _vala_array_dup2 (libvoxelcorevoxel_modelDataBlockKind** self, int length) {
 	libvoxelcorevoxel_modelDataBlockKind** result;
 	int i;
 #line 25 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/raster_layer.vala"
@@ -751,7 +751,7 @@ static void libvoxelcore_voxel_model_raster_layer_set_blocks (libvoxelcorevoxel_
 #line 25 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/raster_layer.vala"
 	_tmp0__length2 = value_length2;
 #line 25 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/raster_layer.vala"
-	_tmp1_ = (_tmp0_ != NULL) ? _vala_array_dup1 (_tmp0_, _tmp0__length1 * _tmp0__length2) : ((gpointer) _tmp0_);
+	_tmp1_ = (_tmp0_ != NULL) ? _vala_array_dup2 (_tmp0_, _tmp0__length1 * _tmp0__length2) : ((gpointer) _tmp0_);
 #line 25 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/raster_layer.vala"
 	_tmp1__length1 = _tmp0__length1;
 #line 25 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/raster_layer.vala"
