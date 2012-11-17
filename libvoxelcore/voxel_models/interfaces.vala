@@ -20,9 +20,14 @@
 */
 
 
-namespace libvcm.voxel_model {
+using libvoxelcore.materials;
+
+
+namespace libvoxelcore.voxel_model {
+
 
 	public interface VoxelKind: Object {
+		public abstract MaterialKind? material { get; set; }
 	}
 
 
@@ -59,4 +64,6 @@ namespace libvcm.voxel_model {
 		public abstract VoxelKind? get(int x, int y);
 		public abstract void set(int x, int y, VoxelKind voxel);
 	}
+
+
 }

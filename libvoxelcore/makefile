@@ -13,11 +13,14 @@ DEBUG_VFLAGS = -g --save-temps -o debug.out
 #VOXELCORE_VFLAGS = --thread bin/libvoxelpress.vapi --pkg json-glib-1.0 -X libvoxelpress.so -X -I./bin -o bin/voxelpress
 
 # source code files
-LIBVPRESS_SRC = materials/simple_voxel.vala \
+LIBVPRESS_SRC = materials/interfaces.vala \
+		materials/color_material.vala \
+		vector_models/interfaces.vala \
 		voxel_models/interfaces.vala \
 		voxel_models/raster_layer.vala \
 		voxel_models/data_block.vala \
-		voxel_models/voxel_model.vala 
+		voxel_models/voxel_model.vala \
+		voxel_models/voxel.vala 
 		#vector_models/*.vala
 
 

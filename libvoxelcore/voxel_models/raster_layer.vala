@@ -20,7 +20,7 @@
 */
 
 
-namespace libvcm.voxel_model {
+namespace libvoxelcore.voxel_model {
 	public class RasterLayer: Object, RasterLayerKind {
 		public DataBlockKind[,] blocks { get; private set; }
 		public int center_x { get; private set; }

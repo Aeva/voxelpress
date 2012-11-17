@@ -23,7 +23,7 @@
 using Gee;
 
 
-namespace libvcm.voxel_model {
+namespace libvoxelcore.voxel_model {
 	public class VoxelModel: Object, VoxelModelKind {
 		public double page_width { get; private set; }  // x, in mm
 		public double page_length { get; private set; } // y, in mm

@@ -20,6 +20,9 @@
 */
 
 
+using libvoxelcore.materials;
+
+
 namespace libvoxelcore.voxel_model {
 
 

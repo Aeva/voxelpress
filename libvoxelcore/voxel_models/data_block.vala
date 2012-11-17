@@ -20,7 +20,7 @@
 */
 
 
-namespace libvcm.voxel_model {
+namespace libvoxelcore.voxel_model {
 	public class DataBlock: Object, DataBlockKind {
 		public VoxelKind[,] data { get; private set; }
 
