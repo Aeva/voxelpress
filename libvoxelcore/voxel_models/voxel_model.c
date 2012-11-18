@@ -27,6 +27,7 @@
 #include <float.h>
 #include <math.h>
 #include <gee.h>
+#include <stdio.h>
 
 
 #define LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL_MODEL_KIND (libvoxelcore_voxel_model_voxel_model_kind_get_type ())
@@ -72,6 +73,22 @@ typedef struct _libvoxelcorevoxel_modelVoxelModelPrivate libvoxelcorevoxel_model
 typedef struct _libvoxelcorevoxel_modelRasterLayerKind libvoxelcorevoxel_modelRasterLayerKind;
 typedef struct _libvoxelcorevoxel_modelRasterLayerKindIface libvoxelcorevoxel_modelRasterLayerKindIface;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+
+#define LIBVOXELCORE_VECTOR_MODEL_TYPE_FACE_KIND (libvoxelcore_vector_model_face_kind_get_type ())
+#define LIBVOXELCORE_VECTOR_MODEL_FACE_KIND(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIBVOXELCORE_VECTOR_MODEL_TYPE_FACE_KIND, libvoxelcorevector_modelFaceKind))
+#define LIBVOXELCORE_VECTOR_MODEL_IS_FACE_KIND(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIBVOXELCORE_VECTOR_MODEL_TYPE_FACE_KIND))
+#define LIBVOXELCORE_VECTOR_MODEL_FACE_KIND_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), LIBVOXELCORE_VECTOR_MODEL_TYPE_FACE_KIND, libvoxelcorevector_modelFaceKindIface))
+
+typedef struct _libvoxelcorevector_modelFaceKind libvoxelcorevector_modelFaceKind;
+typedef struct _libvoxelcorevector_modelFaceKindIface libvoxelcorevector_modelFaceKindIface;
+
+#define LIBVOXELCORE_VECTOR_MODEL_TYPE_VERTEX_KIND (libvoxelcore_vector_model_vertex_kind_get_type ())
+#define LIBVOXELCORE_VECTOR_MODEL_VERTEX_KIND(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIBVOXELCORE_VECTOR_MODEL_TYPE_VERTEX_KIND, libvoxelcorevector_modelVertexKind))
+#define LIBVOXELCORE_VECTOR_MODEL_IS_VERTEX_KIND(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIBVOXELCORE_VECTOR_MODEL_TYPE_VERTEX_KIND))
+#define LIBVOXELCORE_VECTOR_MODEL_VERTEX_KIND_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), LIBVOXELCORE_VECTOR_MODEL_TYPE_VERTEX_KIND, libvoxelcorevector_modelVertexKindIface))
+
+typedef struct _libvoxelcorevector_modelVertexKind libvoxelcorevector_modelVertexKind;
+typedef struct _libvoxelcorevector_modelVertexKindIface libvoxelcorevector_modelVertexKindIface;
 
 #define LIBVOXELCORE_VOXEL_MODEL_TYPE_RASTER_LAYER (libvoxelcore_voxel_model_raster_layer_get_type ())
 #define LIBVOXELCORE_VOXEL_MODEL_RASTER_LAYER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIBVOXELCORE_VOXEL_MODEL_TYPE_RASTER_LAYER, libvoxelcorevoxel_modelRasterLayer))
@@ -135,6 +152,24 @@ struct _libvoxelcorevoxel_modelVoxelModelPrivate {
 	GStaticRecMutex __lock_layers;
 };
 
+struct _libvoxelcorevector_modelVertexKindIface {
+	GTypeInterface parent_iface;
+	gdouble (*get_x) (libvoxelcorevector_modelVertexKind* self);
+	void (*set_x) (libvoxelcorevector_modelVertexKind* self, gdouble value);
+	gdouble (*get_y) (libvoxelcorevector_modelVertexKind* self);
+	void (*set_y) (libvoxelcorevector_modelVertexKind* self, gdouble value);
+	gdouble (*get_z) (libvoxelcorevector_modelVertexKind* self);
+	void (*set_z) (libvoxelcorevector_modelVertexKind* self, gdouble value);
+	libvoxelcorematerialsMaterialKind* (*get_material) (libvoxelcorevector_modelVertexKind* self);
+	void (*set_material) (libvoxelcorevector_modelVertexKind* self, libvoxelcorematerialsMaterialKind* value);
+};
+
+struct _libvoxelcorevector_modelFaceKindIface {
+	GTypeInterface parent_iface;
+	libvoxelcorevector_modelVertexKind** (*get_vertices) (libvoxelcorevector_modelFaceKind* self, int* result_length1);
+	void (*set_vertices) (libvoxelcorevector_modelFaceKind* self, libvoxelcorevector_modelVertexKind** value, int value_length1);
+};
+
 
 static gpointer libvoxelcore_voxel_model_voxel_model_parent_class = NULL;
 static libvoxelcorevoxel_modelVoxelModelKindIface* libvoxelcore_voxel_model_voxel_model_libvoxelcore_voxel_model_voxel_model_kind_parent_iface = NULL;
@@ -181,6 +216,9 @@ gdouble libvoxelcore_voxel_model_voxel_model_get_page_height (libvoxelcorevoxel_
 static void libvoxelcore_voxel_model_voxel_model_set_model_height (libvoxelcorevoxel_modelVoxelModel* self, gint value);
 static void libvoxelcore_voxel_model_voxel_model_set_block_size (libvoxelcorevoxel_modelVoxelModel* self, gint value);
 static void libvoxelcore_voxel_model_voxel_model_set_empty (libvoxelcorevoxel_modelVoxelModel* self, gboolean value);
+GType libvoxelcore_vector_model_vertex_kind_get_type (void) G_GNUC_CONST;
+GType libvoxelcore_vector_model_face_kind_get_type (void) G_GNUC_CONST;
+void libvoxelcore_voxel_model_voxel_model_rasterize (libvoxelcorevoxel_modelVoxelModel* self, libvoxelcorevector_modelFaceKind* face);
 static libvoxelcorevoxel_modelVoxelKind* libvoxelcore_voxel_model_voxel_model_real_get (libvoxelcorevoxel_modelVoxelModelKind* base, gint x, gint y, gint z);
 GeeHashMap* libvoxelcore_voxel_model_voxel_model_get_layers (libvoxelcorevoxel_modelVoxelModel* self);
 libvoxelcorevoxel_modelVoxelKind* libvoxelcore_voxel_model_raster_layer_kind_get (libvoxelcorevoxel_modelRasterLayerKind* self, gint x, gint y);
@@ -228,68 +266,82 @@ libvoxelcorevoxel_modelVoxelModel* libvoxelcore_voxel_model_voxel_model_construc
 	gdouble _tmp10_;
 	gdouble _tmp11_;
 	gdouble _tmp12_;
-#line 58 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 59 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self = (libvoxelcorevoxel_modelVoxelModel*) g_object_new (object_type, NULL);
-#line 61 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 62 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = gee_hash_map_new (G_TYPE_INT, NULL, NULL, LIBVOXELCORE_VOXEL_MODEL_TYPE_RASTER_LAYER_KIND, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL, NULL, NULL);
-#line 61 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 62 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp1_ = _tmp0_;
-#line 61 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 62 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_set_layers (self, _tmp1_);
-#line 61 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 62 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_g_object_unref0 (_tmp1_);
-#line 62 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 63 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp2_ = xy_res;
-#line 62 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 63 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_set_xy_res (self, _tmp2_);
-#line 63 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 64 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp3_ = z_res;
-#line 63 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 64 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_set_z_res (self, _tmp3_);
-#line 64 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 65 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp4_ = p_width;
-#line 64 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 65 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_set_page_width (self, _tmp4_);
-#line 65 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 66 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp5_ = p_length;
-#line 65 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 66 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_set_page_length (self, _tmp5_);
-#line 66 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 67 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp6_ = p_height;
-#line 66 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 67 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_set_page_height (self, _tmp6_);
-#line 68 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 69 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp7_ = self->priv->_page_width;
-#line 68 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 69 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp8_ = xy_res;
-#line 68 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 69 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_set_model_width (self, (gint) (_tmp7_ * _tmp8_));
-#line 69 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 70 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp9_ = self->priv->_page_length;
-#line 69 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 70 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp10_ = xy_res;
-#line 69 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 70 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_set_model_length (self, (gint) (_tmp9_ * _tmp10_));
-#line 70 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 71 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp11_ = self->priv->_page_height;
-#line 70 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 71 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp12_ = z_res;
-#line 70 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 71 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_set_model_height (self, (gint) (_tmp11_ * _tmp12_));
-#line 72 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
-	libvoxelcore_voxel_model_voxel_model_set_block_size (self, 16);
 #line 73 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+	libvoxelcore_voxel_model_voxel_model_set_block_size (self, 16);
+#line 74 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_set_empty (self, TRUE);
-#line 58 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 59 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return self;
-#line 286 "voxel_model.c"
+#line 324 "voxel_model.c"
 }
 
 
 libvoxelcorevoxel_modelVoxelModel* libvoxelcore_voxel_model_voxel_model_new (gdouble p_width, gdouble p_length, gdouble p_height, gdouble xy_res, gdouble z_res) {
-#line 58 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 59 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return libvoxelcore_voxel_model_voxel_model_construct (LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL_MODEL, p_width, p_length, p_height, xy_res, z_res);
-#line 293 "voxel_model.c"
+#line 331 "voxel_model.c"
+}
+
+
+void libvoxelcore_voxel_model_voxel_model_rasterize (libvoxelcorevoxel_modelVoxelModel* self, libvoxelcorevector_modelFaceKind* face) {
+	FILE* _tmp0_;
+#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+	g_return_if_fail (self != NULL);
+#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+	g_return_if_fail (face != NULL);
+#line 79 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+	_tmp0_ = stdout;
+#line 79 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+	fprintf (_tmp0_, "Rasterizing a face.\n");
+#line 345 "voxel_model.c"
 }
 
 
@@ -305,95 +357,95 @@ static libvoxelcorevoxel_modelVoxelKind* libvoxelcore_voxel_model_voxel_model_re
 	libvoxelcorevoxel_modelVoxelKind* _tmp14_ = NULL;
 	libvoxelcorevoxel_modelVoxelKind* _tmp15_;
 	GError * _inner_error_ = NULL;
-#line 77 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 83 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self = (libvoxelcorevoxel_modelVoxelModel*) base;
-#line 311 "voxel_model.c"
+#line 363 "voxel_model.c"
 	{
 		GeeHashMap* _tmp0_;
-#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 84 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		_tmp0_ = self->priv->_layers;
-#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 84 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_static_rec_mutex_lock (&self->priv->__lock_layers);
-#line 318 "voxel_model.c"
+#line 370 "voxel_model.c"
 		{
 			GeeHashMap* _tmp1_;
 			gint _tmp2_;
 			gpointer _tmp3_ = NULL;
 			libvoxelcorevoxel_modelRasterLayerKind* _tmp4_;
 			gboolean _tmp5_;
-#line 79 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp1_ = self->priv->_layers;
-#line 79 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp2_ = z;
-#line 79 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp3_ = gee_abstract_map_get ((GeeAbstractMap*) _tmp1_, GINT_TO_POINTER (_tmp2_));
-#line 79 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp4_ = (libvoxelcorevoxel_modelRasterLayerKind*) _tmp3_;
-#line 79 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp5_ = _tmp4_ == NULL;
-#line 79 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_g_object_unref0 (_tmp4_);
-#line 79 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			if (_tmp5_) {
-#line 80 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 86 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				result = NULL;
-#line 341 "voxel_model.c"
+#line 393 "voxel_model.c"
 				{
 					GeeHashMap* _tmp6_;
-#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 84 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp6_ = self->priv->_layers;
-#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 84 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					g_static_rec_mutex_unlock (&self->priv->__lock_layers);
-#line 348 "voxel_model.c"
+#line 400 "voxel_model.c"
 				}
-#line 80 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 86 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				return result;
-#line 352 "voxel_model.c"
+#line 404 "voxel_model.c"
 			}
 		}
 		__finally1:
 		{
 			GeeHashMap* _tmp7_;
-#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 84 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp7_ = self->priv->_layers;
-#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 84 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			g_static_rec_mutex_unlock (&self->priv->__lock_layers);
-#line 362 "voxel_model.c"
+#line 414 "voxel_model.c"
 		}
-#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 84 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		if (_inner_error_ != NULL) {
-#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 84 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 84 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			g_clear_error (&_inner_error_);
-#line 78 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 84 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			return NULL;
-#line 372 "voxel_model.c"
+#line 424 "voxel_model.c"
 		}
 	}
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp8_ = self->priv->_layers;
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp9_ = z;
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp10_ = gee_abstract_map_get ((GeeAbstractMap*) _tmp8_, GINT_TO_POINTER (_tmp9_));
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp11_ = (libvoxelcorevoxel_modelRasterLayerKind*) _tmp10_;
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp12_ = x;
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp13_ = y;
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp14_ = libvoxelcore_voxel_model_raster_layer_kind_get (_tmp11_, _tmp12_, _tmp13_);
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp15_ = _tmp14_;
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_g_object_unref0 (_tmp11_);
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp15_;
-#line 85 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 397 "voxel_model.c"
+#line 449 "voxel_model.c"
 }
 
 
@@ -407,18 +459,18 @@ static void libvoxelcore_voxel_model_voxel_model_real_set (libvoxelcorevoxel_mod
 	gint _tmp62_;
 	libvoxelcorevoxel_modelVoxelKind* _tmp63_;
 	GError * _inner_error_ = NULL;
-#line 89 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 95 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self = (libvoxelcorevoxel_modelVoxelModel*) base;
-#line 89 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 95 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (voxel != NULL);
-#line 415 "voxel_model.c"
+#line 467 "voxel_model.c"
 	{
 		GeeHashMap* _tmp0_;
-#line 90 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 96 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		_tmp0_ = self->priv->_layers;
-#line 90 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 96 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_static_rec_mutex_lock (&self->priv->__lock_layers);
-#line 422 "voxel_model.c"
+#line 474 "voxel_model.c"
 		{
 			gboolean _tmp1_;
 			GeeHashMap* _tmp44_;
@@ -426,44 +478,44 @@ static void libvoxelcore_voxel_model_voxel_model_real_set (libvoxelcorevoxel_mod
 			gpointer _tmp46_ = NULL;
 			libvoxelcorevoxel_modelRasterLayerKind* _tmp47_;
 			gboolean _tmp48_;
-#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 97 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp1_ = self->priv->_empty;
-#line 91 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 97 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			if (_tmp1_) {
-#line 434 "voxel_model.c"
+#line 486 "voxel_model.c"
 				gint _tmp2_;
 				gint _tmp3_;
 				gint _tmp4_;
 				gint _tmp5_;
 				gint _tmp6_;
 				gint _tmp7_;
-#line 92 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 98 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_empty (self, FALSE);
-#line 93 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 99 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp2_ = x;
-#line 93 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 99 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_min_x (self, _tmp2_);
-#line 94 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 100 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp3_ = x;
-#line 94 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 100 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_max_x (self, _tmp3_);
-#line 95 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp4_ = y;
-#line 95 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_min_y (self, _tmp4_);
-#line 96 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp5_ = y;
-#line 96 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_max_y (self, _tmp5_);
-#line 97 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp6_ = z;
-#line 97 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_min_z (self, _tmp6_);
-#line 98 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp7_ = z;
-#line 98 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_max_z (self, _tmp7_);
-#line 467 "voxel_model.c"
+#line 519 "voxel_model.c"
 			} else {
 				gint _tmp8_ = 0;
 				gint _tmp9_;
@@ -489,173 +541,173 @@ static void libvoxelcore_voxel_model_voxel_model_real_set (libvoxelcorevoxel_mod
 				gint _tmp39_;
 				gint _tmp40_;
 				gint _tmp43_;
-#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 107 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp9_ = x;
-#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 107 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp10_ = self->priv->_min_x;
-#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 107 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				if (_tmp9_ < _tmp10_) {
-#line 499 "voxel_model.c"
+#line 551 "voxel_model.c"
 					gint _tmp11_;
-#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 107 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp11_ = x;
-#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 107 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp8_ = _tmp11_;
-#line 505 "voxel_model.c"
+#line 557 "voxel_model.c"
 				} else {
 					gint _tmp12_;
-#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 107 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp12_ = self->priv->_min_x;
-#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 107 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp8_ = _tmp12_;
-#line 512 "voxel_model.c"
+#line 564 "voxel_model.c"
 				}
-#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 107 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp13_ = _tmp8_;
-#line 101 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 107 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_min_x (self, _tmp13_);
-#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp15_ = x;
-#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp16_ = self->priv->_max_x;
-#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				if (_tmp15_ > _tmp16_) {
-#line 524 "voxel_model.c"
+#line 576 "voxel_model.c"
 					gint _tmp17_;
-#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp17_ = x;
-#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp14_ = _tmp17_;
-#line 530 "voxel_model.c"
+#line 582 "voxel_model.c"
 				} else {
 					gint _tmp18_;
-#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp18_ = self->priv->_max_x;
-#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp14_ = _tmp18_;
-#line 537 "voxel_model.c"
+#line 589 "voxel_model.c"
 				}
-#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp19_ = _tmp14_;
-#line 102 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_max_x (self, _tmp19_);
-#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp21_ = y;
-#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp22_ = self->priv->_min_y;
-#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				if (_tmp21_ < _tmp22_) {
-#line 549 "voxel_model.c"
+#line 601 "voxel_model.c"
 					gint _tmp23_;
-#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp23_ = y;
-#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp20_ = _tmp23_;
-#line 555 "voxel_model.c"
+#line 607 "voxel_model.c"
 				} else {
 					gint _tmp24_;
-#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp24_ = self->priv->_min_y;
-#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp20_ = _tmp24_;
-#line 562 "voxel_model.c"
+#line 614 "voxel_model.c"
 				}
-#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp25_ = _tmp20_;
-#line 103 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_min_y (self, _tmp25_);
-#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 110 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp27_ = y;
-#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 110 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp28_ = self->priv->_max_y;
-#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 110 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				if (_tmp27_ > _tmp28_) {
-#line 574 "voxel_model.c"
+#line 626 "voxel_model.c"
 					gint _tmp29_;
-#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 110 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp29_ = y;
-#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 110 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp26_ = _tmp29_;
-#line 580 "voxel_model.c"
+#line 632 "voxel_model.c"
 				} else {
 					gint _tmp30_;
-#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 110 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp30_ = self->priv->_max_y;
-#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 110 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp26_ = _tmp30_;
-#line 587 "voxel_model.c"
+#line 639 "voxel_model.c"
 				}
-#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 110 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp31_ = _tmp26_;
-#line 104 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 110 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_max_y (self, _tmp31_);
-#line 105 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 111 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp33_ = z;
-#line 105 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 111 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp34_ = self->priv->_min_z;
-#line 105 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 111 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				if (_tmp33_ < _tmp34_) {
-#line 599 "voxel_model.c"
+#line 651 "voxel_model.c"
 					gint _tmp35_;
-#line 105 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 111 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp35_ = z;
-#line 105 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 111 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp32_ = _tmp35_;
-#line 605 "voxel_model.c"
+#line 657 "voxel_model.c"
 				} else {
 					gint _tmp36_;
-#line 105 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 111 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp36_ = self->priv->_min_z;
-#line 105 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 111 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp32_ = _tmp36_;
-#line 612 "voxel_model.c"
+#line 664 "voxel_model.c"
 				}
-#line 105 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 111 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp37_ = _tmp32_;
-#line 105 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 111 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_min_z (self, _tmp37_);
-#line 106 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 112 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp39_ = z;
-#line 106 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 112 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp40_ = self->priv->_max_z;
-#line 106 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 112 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				if (_tmp39_ > _tmp40_) {
-#line 624 "voxel_model.c"
+#line 676 "voxel_model.c"
 					gint _tmp41_;
-#line 106 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 112 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp41_ = z;
-#line 106 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 112 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp38_ = _tmp41_;
-#line 630 "voxel_model.c"
+#line 682 "voxel_model.c"
 				} else {
 					gint _tmp42_;
-#line 106 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 112 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp42_ = self->priv->_max_z;
-#line 106 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 112 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 					_tmp38_ = _tmp42_;
-#line 637 "voxel_model.c"
+#line 689 "voxel_model.c"
 				}
-#line 106 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 112 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp43_ = _tmp38_;
-#line 106 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 112 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				libvoxelcore_voxel_model_voxel_model_set_max_z (self, _tmp43_);
-#line 643 "voxel_model.c"
+#line 695 "voxel_model.c"
 			}
-#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 114 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp44_ = self->priv->_layers;
-#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 114 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp45_ = z;
-#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 114 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp46_ = gee_abstract_map_get ((GeeAbstractMap*) _tmp44_, GINT_TO_POINTER (_tmp45_));
-#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 114 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp47_ = (libvoxelcorevoxel_modelRasterLayerKind*) _tmp46_;
-#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 114 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp48_ = _tmp47_ == NULL;
-#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 114 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_g_object_unref0 (_tmp47_);
-#line 108 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 114 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			if (_tmp48_) {
-#line 659 "voxel_model.c"
+#line 711 "voxel_model.c"
 				GeeHashMap* _tmp49_;
 				gint _tmp50_;
 				gint _tmp51_;
@@ -663,654 +715,654 @@ static void libvoxelcore_voxel_model_voxel_model_real_set (libvoxelcorevoxel_mod
 				gint _tmp53_;
 				libvoxelcorevoxel_modelRasterLayer* _tmp54_;
 				libvoxelcorevoxel_modelRasterLayer* _tmp55_;
-#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp49_ = self->priv->_layers;
-#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp50_ = z;
-#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp51_ = self->priv->_block_size;
-#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp52_ = self->priv->_model_width;
-#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp53_ = self->priv->_model_height;
-#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp54_ = libvoxelcore_voxel_model_raster_layer_new (_tmp51_, _tmp52_, _tmp53_);
-#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_tmp55_ = _tmp54_;
-#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				gee_abstract_map_set ((GeeAbstractMap*) _tmp49_, GINT_TO_POINTER (_tmp50_), (libvoxelcorevoxel_modelRasterLayerKind*) _tmp55_);
-#line 109 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 				_g_object_unref0 (_tmp55_);
-#line 685 "voxel_model.c"
+#line 737 "voxel_model.c"
 			}
 		}
 		__finally2:
 		{
 			GeeHashMap* _tmp56_;
-#line 90 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 96 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			_tmp56_ = self->priv->_layers;
-#line 90 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 96 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			g_static_rec_mutex_unlock (&self->priv->__lock_layers);
-#line 695 "voxel_model.c"
+#line 747 "voxel_model.c"
 		}
-#line 90 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 96 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		if (_inner_error_ != NULL) {
-#line 90 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 96 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-#line 90 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 96 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			g_clear_error (&_inner_error_);
-#line 90 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 96 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 			return;
-#line 705 "voxel_model.c"
+#line 757 "voxel_model.c"
 		}
 	}
-#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 121 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp57_ = self->priv->_layers;
-#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 121 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp58_ = z;
-#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 121 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp59_ = gee_abstract_map_get ((GeeAbstractMap*) _tmp57_, GINT_TO_POINTER (_tmp58_));
-#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 121 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp60_ = (libvoxelcorevoxel_modelRasterLayerKind*) _tmp59_;
-#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 121 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp61_ = x;
-#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 121 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp62_ = y;
-#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 121 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp63_ = voxel;
-#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 121 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_raster_layer_kind_set (_tmp60_, _tmp61_, _tmp62_, _tmp63_);
-#line 115 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 121 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_g_object_unref0 (_tmp60_);
-#line 726 "voxel_model.c"
+#line 778 "voxel_model.c"
 }
 
 
 gdouble libvoxelcore_voxel_model_voxel_model_get_page_width (libvoxelcorevoxel_modelVoxelModel* self) {
 	gdouble result;
 	gdouble _tmp0_;
-#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0.0);
-#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_page_width;
-#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 741 "voxel_model.c"
+#line 793 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_page_width (libvoxelcorevoxel_modelVoxelModel* self, gdouble value) {
 	gdouble _tmp0_;
-#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_page_width = _tmp0_;
-#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "page-width");
-#line 755 "voxel_model.c"
+#line 807 "voxel_model.c"
 }
 
 
 gdouble libvoxelcore_voxel_model_voxel_model_get_page_length (libvoxelcorevoxel_modelVoxelModel* self) {
 	gdouble result;
 	gdouble _tmp0_;
-#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0.0);
-#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_page_length;
-#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 770 "voxel_model.c"
+#line 822 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_page_length (libvoxelcorevoxel_modelVoxelModel* self, gdouble value) {
 	gdouble _tmp0_;
-#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_page_length = _tmp0_;
-#line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "page-length");
-#line 784 "voxel_model.c"
+#line 836 "voxel_model.c"
 }
 
 
 gdouble libvoxelcore_voxel_model_voxel_model_get_page_height (libvoxelcorevoxel_modelVoxelModel* self) {
 	gdouble result;
 	gdouble _tmp0_;
-#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 31 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0.0);
-#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 31 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_page_height;
-#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 31 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 31 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 799 "voxel_model.c"
+#line 851 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_page_height (libvoxelcorevoxel_modelVoxelModel* self, gdouble value) {
 	gdouble _tmp0_;
-#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 31 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 31 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 31 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_page_height = _tmp0_;
-#line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 31 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "page-height");
-#line 813 "voxel_model.c"
+#line 865 "voxel_model.c"
 }
 
 
 gdouble libvoxelcore_voxel_model_voxel_model_get_xy_res (libvoxelcorevoxel_modelVoxelModel* self) {
 	gdouble result;
 	gdouble _tmp0_;
-#line 35 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 36 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0.0);
-#line 35 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 36 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_xy_res;
-#line 35 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 36 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 35 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 36 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 828 "voxel_model.c"
+#line 880 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_xy_res (libvoxelcorevoxel_modelVoxelModel* self, gdouble value) {
 	gdouble _tmp0_;
-#line 35 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 36 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 35 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 36 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 35 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 36 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_xy_res = _tmp0_;
-#line 35 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 36 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "xy-res");
-#line 842 "voxel_model.c"
+#line 894 "voxel_model.c"
 }
 
 
 gdouble libvoxelcore_voxel_model_voxel_model_get_z_res (libvoxelcorevoxel_modelVoxelModel* self) {
 	gdouble result;
 	gdouble _tmp0_;
-#line 39 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 40 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0.0);
-#line 39 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 40 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_z_res;
-#line 39 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 40 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 39 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 40 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 857 "voxel_model.c"
+#line 909 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_z_res (libvoxelcorevoxel_modelVoxelModel* self, gdouble value) {
 	gdouble _tmp0_;
-#line 39 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 40 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 39 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 40 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 39 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 40 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_z_res = _tmp0_;
-#line 39 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 40 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "z-res");
-#line 871 "voxel_model.c"
+#line 923 "voxel_model.c"
 }
 
 
 gint libvoxelcore_voxel_model_voxel_model_get_model_width (libvoxelcorevoxel_modelVoxelModel* self) {
 	gint result;
 	gint _tmp0_;
-#line 42 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 42 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_model_width;
-#line 42 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 42 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 886 "voxel_model.c"
+#line 938 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_model_width (libvoxelcorevoxel_modelVoxelModel* self, gint value) {
 	gint _tmp0_;
-#line 42 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 42 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 42 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_model_width = _tmp0_;
-#line 42 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "model-width");
-#line 900 "voxel_model.c"
+#line 952 "voxel_model.c"
 }
 
 
 gint libvoxelcore_voxel_model_voxel_model_get_model_length (libvoxelcorevoxel_modelVoxelModel* self) {
 	gint result;
 	gint _tmp0_;
-#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_model_length;
-#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 915 "voxel_model.c"
+#line 967 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_model_length (libvoxelcorevoxel_modelVoxelModel* self, gint value) {
 	gint _tmp0_;
-#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_model_length = _tmp0_;
-#line 43 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "model-length");
-#line 929 "voxel_model.c"
+#line 981 "voxel_model.c"
 }
 
 
 gint libvoxelcore_voxel_model_voxel_model_get_model_height (libvoxelcorevoxel_modelVoxelModel* self) {
 	gint result;
 	gint _tmp0_;
-#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_model_height;
-#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 944 "voxel_model.c"
+#line 996 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_model_height (libvoxelcorevoxel_modelVoxelModel* self, gint value) {
 	gint _tmp0_;
-#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_model_height = _tmp0_;
-#line 44 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "model-height");
-#line 958 "voxel_model.c"
+#line 1010 "voxel_model.c"
 }
 
 
 gint libvoxelcore_voxel_model_voxel_model_get_min_x (libvoxelcorevoxel_modelVoxelModel* self) {
 	gint result;
 	gint _tmp0_;
-#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_min_x;
-#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 973 "voxel_model.c"
+#line 1025 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_min_x (libvoxelcorevoxel_modelVoxelModel* self, gint value) {
 	gint _tmp0_;
-#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_min_x = _tmp0_;
-#line 45 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "min-x");
-#line 987 "voxel_model.c"
+#line 1039 "voxel_model.c"
 }
 
 
 gint libvoxelcore_voxel_model_voxel_model_get_max_x (libvoxelcorevoxel_modelVoxelModel* self) {
 	gint result;
 	gint _tmp0_;
-#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_max_x;
-#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 1002 "voxel_model.c"
+#line 1054 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_max_x (libvoxelcorevoxel_modelVoxelModel* self, gint value) {
 	gint _tmp0_;
-#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_max_x = _tmp0_;
-#line 46 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "max-x");
-#line 1016 "voxel_model.c"
+#line 1068 "voxel_model.c"
 }
 
 
 gint libvoxelcore_voxel_model_voxel_model_get_min_y (libvoxelcorevoxel_modelVoxelModel* self) {
 	gint result;
 	gint _tmp0_;
-#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_min_y;
-#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 1031 "voxel_model.c"
+#line 1083 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_min_y (libvoxelcorevoxel_modelVoxelModel* self, gint value) {
 	gint _tmp0_;
-#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_min_y = _tmp0_;
-#line 47 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "min-y");
-#line 1045 "voxel_model.c"
+#line 1097 "voxel_model.c"
 }
 
 
 gint libvoxelcore_voxel_model_voxel_model_get_max_y (libvoxelcorevoxel_modelVoxelModel* self) {
 	gint result;
 	gint _tmp0_;
-#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_max_y;
-#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 1060 "voxel_model.c"
+#line 1112 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_max_y (libvoxelcorevoxel_modelVoxelModel* self, gint value) {
 	gint _tmp0_;
-#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_max_y = _tmp0_;
-#line 48 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "max-y");
-#line 1074 "voxel_model.c"
+#line 1126 "voxel_model.c"
 }
 
 
 gint libvoxelcore_voxel_model_voxel_model_get_min_z (libvoxelcorevoxel_modelVoxelModel* self) {
 	gint result;
 	gint _tmp0_;
-#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_min_z;
-#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 1089 "voxel_model.c"
+#line 1141 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_min_z (libvoxelcorevoxel_modelVoxelModel* self, gint value) {
 	gint _tmp0_;
-#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_min_z = _tmp0_;
-#line 49 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "min-z");
-#line 1103 "voxel_model.c"
+#line 1155 "voxel_model.c"
 }
 
 
 gint libvoxelcore_voxel_model_voxel_model_get_max_z (libvoxelcorevoxel_modelVoxelModel* self) {
 	gint result;
 	gint _tmp0_;
-#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_max_z;
-#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 1118 "voxel_model.c"
+#line 1170 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_max_z (libvoxelcorevoxel_modelVoxelModel* self, gint value) {
 	gint _tmp0_;
-#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_max_z = _tmp0_;
-#line 50 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "max-z");
-#line 1132 "voxel_model.c"
+#line 1184 "voxel_model.c"
 }
 
 
 gint libvoxelcore_voxel_model_voxel_model_get_block_size (libvoxelcorevoxel_modelVoxelModel* self) {
 	gint result;
 	gint _tmp0_;
-#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_block_size;
-#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 1147 "voxel_model.c"
+#line 1199 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_block_size (libvoxelcorevoxel_modelVoxelModel* self, gint value) {
 	gint _tmp0_;
-#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_block_size = _tmp0_;
-#line 51 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "block-size");
-#line 1161 "voxel_model.c"
+#line 1213 "voxel_model.c"
 }
 
 
 gboolean libvoxelcore_voxel_model_voxel_model_get_empty (libvoxelcorevoxel_modelVoxelModel* self) {
 	gboolean result;
 	gboolean _tmp0_;
-#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 53 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 53 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_empty;
-#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 53 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 53 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 1176 "voxel_model.c"
+#line 1228 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_set_empty (libvoxelcorevoxel_modelVoxelModel* self, gboolean value) {
 	gboolean _tmp0_;
-#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 53 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 53 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 53 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_empty = _tmp0_;
-#line 52 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 53 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "empty");
-#line 1190 "voxel_model.c"
+#line 1242 "voxel_model.c"
 }
 
 
 GeeHashMap* libvoxelcore_voxel_model_voxel_model_get_layers (libvoxelcorevoxel_modelVoxelModel* self) {
 	GeeHashMap* result;
 	GeeHashMap* _tmp0_;
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = self->priv->_layers;
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	result = _tmp0_;
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return result;
-#line 1205 "voxel_model.c"
+#line 1257 "voxel_model.c"
 }
 
 
 static gpointer _g_object_ref0 (gpointer self) {
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	return self ? g_object_ref (self) : NULL;
-#line 1212 "voxel_model.c"
+#line 1264 "voxel_model.c"
 }
 
 
 void libvoxelcore_voxel_model_voxel_model_set_layers (libvoxelcorevoxel_modelVoxelModel* self, GeeHashMap* value) {
 	GeeHashMap* _tmp0_;
 	GeeHashMap* _tmp1_;
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_return_if_fail (self != NULL);
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp0_ = value;
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_tmp1_ = _g_object_ref0 (_tmp0_);
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_g_object_unref0 (self->priv->_layers);
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv->_layers = _tmp1_;
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_notify ((GObject *) self, "layers");
-#line 1231 "voxel_model.c"
+#line 1283 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_class_init (libvoxelcorevoxel_modelVoxelModelClass * klass) {
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_parent_class = g_type_class_peek_parent (klass);
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_type_class_add_private (klass, sizeof (libvoxelcorevoxel_modelVoxelModelPrivate));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	G_OBJECT_CLASS (klass)->get_property = _vala_libvoxelcore_voxel_model_voxel_model_get_property;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	G_OBJECT_CLASS (klass)->set_property = _vala_libvoxelcore_voxel_model_voxel_model_set_property;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	G_OBJECT_CLASS (klass)->finalize = libvoxelcore_voxel_model_voxel_model_finalize;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_PAGE_WIDTH, g_param_spec_double ("page-width", "page-width", "page-width", -G_MAXDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_PAGE_LENGTH, g_param_spec_double ("page-length", "page-length", "page-length", -G_MAXDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_PAGE_HEIGHT, g_param_spec_double ("page-height", "page-height", "page-height", -G_MAXDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_XY_RES, g_param_spec_double ("xy-res", "xy-res", "xy-res", -G_MAXDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_Z_RES, g_param_spec_double ("z-res", "z-res", "z-res", -G_MAXDOUBLE, G_MAXDOUBLE, 0.0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MODEL_WIDTH, g_param_spec_int ("model-width", "model-width", "model-width", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MODEL_LENGTH, g_param_spec_int ("model-length", "model-length", "model-length", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MODEL_HEIGHT, g_param_spec_int ("model-height", "model-height", "model-height", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MIN_X, g_param_spec_int ("min-x", "min-x", "min-x", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MAX_X, g_param_spec_int ("max-x", "max-x", "max-x", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MIN_Y, g_param_spec_int ("min-y", "min-y", "min-y", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MAX_Y, g_param_spec_int ("max-y", "max-y", "max-y", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MIN_Z, g_param_spec_int ("min-z", "min-z", "min-z", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MAX_Z, g_param_spec_int ("max-z", "max-z", "max-z", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_BLOCK_SIZE, g_param_spec_int ("block-size", "block-size", "block-size", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_EMPTY, g_param_spec_boolean ("empty", "empty", "empty", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_LAYERS, g_param_spec_object ("layers", "layers", "layers", GEE_TYPE_HASH_MAP, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
-#line 1280 "voxel_model.c"
+#line 1332 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_libvoxelcore_voxel_model_voxel_model_kind_interface_init (libvoxelcorevoxel_modelVoxelModelKindIface * iface) {
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	libvoxelcore_voxel_model_voxel_model_libvoxelcore_voxel_model_voxel_model_kind_parent_iface = g_type_interface_peek_parent (iface);
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	iface->get = (libvoxelcorevoxel_modelVoxelKind* (*)(libvoxelcorevoxel_modelVoxelModelKind*, gint, gint, gint)) libvoxelcore_voxel_model_voxel_model_real_get;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	iface->set = (void (*)(libvoxelcorevoxel_modelVoxelModelKind*, gint, gint, gint, libvoxelcorevoxel_modelVoxelKind*)) libvoxelcore_voxel_model_voxel_model_real_set;
-#line 1291 "voxel_model.c"
+#line 1343 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_instance_init (libvoxelcorevoxel_modelVoxelModel * self) {
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self->priv = LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_GET_PRIVATE (self);
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_static_rec_mutex_init (&self->priv->__lock_layers);
-#line 1300 "voxel_model.c"
+#line 1352 "voxel_model.c"
 }
 
 
 static void libvoxelcore_voxel_model_voxel_model_finalize (GObject* obj) {
 	libvoxelcorevoxel_modelVoxelModel * self;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	self = LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL (obj);
-#line 55 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 56 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	_g_object_unref0 (self->priv->_layers);
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	g_static_rec_mutex_free (&self->priv->__lock_layers);
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	G_OBJECT_CLASS (libvoxelcore_voxel_model_voxel_model_parent_class)->finalize (obj);
-#line 1314 "voxel_model.c"
+#line 1366 "voxel_model.c"
 }
 
 
@@ -1331,117 +1383,117 @@ GType libvoxelcore_voxel_model_voxel_model_get_type (void) {
 static void _vala_libvoxelcore_voxel_model_voxel_model_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	libvoxelcorevoxel_modelVoxelModel * self;
 	self = LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL (object);
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	switch (property_id) {
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_PAGE_WIDTH:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_double (value, libvoxelcore_voxel_model_voxel_model_get_page_width (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_PAGE_LENGTH:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_double (value, libvoxelcore_voxel_model_voxel_model_get_page_length (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_PAGE_HEIGHT:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_double (value, libvoxelcore_voxel_model_voxel_model_get_page_height (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_XY_RES:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_double (value, libvoxelcore_voxel_model_voxel_model_get_xy_res (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_Z_RES:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_double (value, libvoxelcore_voxel_model_voxel_model_get_z_res (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MODEL_WIDTH:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_int (value, libvoxelcore_voxel_model_voxel_model_get_model_width (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MODEL_LENGTH:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_int (value, libvoxelcore_voxel_model_voxel_model_get_model_length (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MODEL_HEIGHT:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_int (value, libvoxelcore_voxel_model_voxel_model_get_model_height (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MIN_X:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_int (value, libvoxelcore_voxel_model_voxel_model_get_min_x (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MAX_X:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_int (value, libvoxelcore_voxel_model_voxel_model_get_max_x (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MIN_Y:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_int (value, libvoxelcore_voxel_model_voxel_model_get_min_y (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MAX_Y:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_int (value, libvoxelcore_voxel_model_voxel_model_get_max_y (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MIN_Z:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_int (value, libvoxelcore_voxel_model_voxel_model_get_min_z (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MAX_Z:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_int (value, libvoxelcore_voxel_model_voxel_model_get_max_z (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_BLOCK_SIZE:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_int (value, libvoxelcore_voxel_model_voxel_model_get_block_size (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_EMPTY:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_boolean (value, libvoxelcore_voxel_model_voxel_model_get_empty (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_LAYERS:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		g_value_set_object (value, libvoxelcore_voxel_model_voxel_model_get_layers (self));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 1439 "voxel_model.c"
+#line 1491 "voxel_model.c"
 		default:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 1445 "voxel_model.c"
+#line 1497 "voxel_model.c"
 	}
 }
 
@@ -1449,117 +1501,117 @@ static void _vala_libvoxelcore_voxel_model_voxel_model_get_property (GObject * o
 static void _vala_libvoxelcore_voxel_model_voxel_model_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
 	libvoxelcorevoxel_modelVoxelModel * self;
 	self = LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL (object);
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 	switch (property_id) {
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_PAGE_WIDTH:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_page_width (self, g_value_get_double (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_PAGE_LENGTH:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_page_length (self, g_value_get_double (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_PAGE_HEIGHT:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_page_height (self, g_value_get_double (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_XY_RES:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_xy_res (self, g_value_get_double (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_Z_RES:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_z_res (self, g_value_get_double (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MODEL_WIDTH:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_model_width (self, g_value_get_int (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MODEL_LENGTH:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_model_length (self, g_value_get_int (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MODEL_HEIGHT:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_model_height (self, g_value_get_int (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MIN_X:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_min_x (self, g_value_get_int (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MAX_X:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_max_x (self, g_value_get_int (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MIN_Y:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_min_y (self, g_value_get_int (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MAX_Y:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_max_y (self, g_value_get_int (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MIN_Z:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_min_z (self, g_value_get_int (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_MAX_Z:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_max_z (self, g_value_get_int (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_BLOCK_SIZE:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_block_size (self, g_value_get_int (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_EMPTY:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_empty (self, g_value_get_boolean (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MODEL_LAYERS:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		libvoxelcore_voxel_model_voxel_model_set_layers (self, g_value_get_object (value));
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 1557 "voxel_model.c"
+#line 1609 "voxel_model.c"
 		default:
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-#line 27 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
+#line 28 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel_model.vala"
 		break;
-#line 1563 "voxel_model.c"
+#line 1615 "voxel_model.c"
 	}
 }
 

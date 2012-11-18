@@ -21,6 +21,7 @@
 
 
 using Gee;
+using libvoxelcore.vector_model;
 
 
 namespace libvoxelcore.voxel_model {
@@ -71,6 +72,11 @@ namespace libvoxelcore.voxel_model {
 
 			block_size = 16;
 			empty = true;
+		}
+
+
+		public void rasterize (FaceKind face) {
+			stdout.printf("Rasterizing a face.\n");
 		}
 
 

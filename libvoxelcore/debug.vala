@@ -48,9 +48,8 @@ int main(string[] args) {
 
 
 	var vec_test = new VectorModel();
-	vec_test.on_face_created.connect((face) => {
-			stdout.printf("... A face was added to the vector model\n");
-		});
+	vec_test.on_face_created.connect(model.rasterize);
+
 
 	var vert1 = new Vertex(1, 0, 0, null);
 	var vert2 = new Vertex(0, 1, 0, null);
