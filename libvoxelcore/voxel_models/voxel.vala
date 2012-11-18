@@ -26,7 +26,7 @@ using libvoxelcore.materials;
 namespace libvoxelcore.voxel_model {
 
 
-	public class SimpleVoxel: Object, VoxelKind {
+	public class Voxel: Object, VoxelKind {
 		public MaterialKind? material { get; set; }
 	}
 

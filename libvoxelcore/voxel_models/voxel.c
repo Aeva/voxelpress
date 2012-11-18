@@ -42,16 +42,16 @@ typedef struct _libvoxelcorevoxel_modelVoxelKindIface libvoxelcorevoxel_modelVox
 typedef struct _libvoxelcorematerialsMaterialKind libvoxelcorematerialsMaterialKind;
 typedef struct _libvoxelcorematerialsMaterialKindIface libvoxelcorematerialsMaterialKindIface;
 
-#define LIBVOXELCORE_VOXEL_MODEL_TYPE_SIMPLE_VOXEL (libvoxelcore_voxel_model_simple_voxel_get_type ())
-#define LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIBVOXELCORE_VOXEL_MODEL_TYPE_SIMPLE_VOXEL, libvoxelcorevoxel_modelSimpleVoxel))
-#define LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), LIBVOXELCORE_VOXEL_MODEL_TYPE_SIMPLE_VOXEL, libvoxelcorevoxel_modelSimpleVoxelClass))
-#define LIBVOXELCORE_VOXEL_MODEL_IS_SIMPLE_VOXEL(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIBVOXELCORE_VOXEL_MODEL_TYPE_SIMPLE_VOXEL))
-#define LIBVOXELCORE_VOXEL_MODEL_IS_SIMPLE_VOXEL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), LIBVOXELCORE_VOXEL_MODEL_TYPE_SIMPLE_VOXEL))
-#define LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), LIBVOXELCORE_VOXEL_MODEL_TYPE_SIMPLE_VOXEL, libvoxelcorevoxel_modelSimpleVoxelClass))
+#define LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL (libvoxelcore_voxel_model_voxel_get_type ())
+#define LIBVOXELCORE_VOXEL_MODEL_VOXEL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL, libvoxelcorevoxel_modelVoxel))
+#define LIBVOXELCORE_VOXEL_MODEL_VOXEL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL, libvoxelcorevoxel_modelVoxelClass))
+#define LIBVOXELCORE_VOXEL_MODEL_IS_VOXEL(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL))
+#define LIBVOXELCORE_VOXEL_MODEL_IS_VOXEL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL))
+#define LIBVOXELCORE_VOXEL_MODEL_VOXEL_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL, libvoxelcorevoxel_modelVoxelClass))
 
-typedef struct _libvoxelcorevoxel_modelSimpleVoxel libvoxelcorevoxel_modelSimpleVoxel;
-typedef struct _libvoxelcorevoxel_modelSimpleVoxelClass libvoxelcorevoxel_modelSimpleVoxelClass;
-typedef struct _libvoxelcorevoxel_modelSimpleVoxelPrivate libvoxelcorevoxel_modelSimpleVoxelPrivate;
+typedef struct _libvoxelcorevoxel_modelVoxel libvoxelcorevoxel_modelVoxel;
+typedef struct _libvoxelcorevoxel_modelVoxelClass libvoxelcorevoxel_modelVoxelClass;
+typedef struct _libvoxelcorevoxel_modelVoxelPrivate libvoxelcorevoxel_modelVoxelPrivate;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
 struct _libvoxelcorematerialsMaterialKindIface {
@@ -64,63 +64,63 @@ struct _libvoxelcorevoxel_modelVoxelKindIface {
 	void (*set_material) (libvoxelcorevoxel_modelVoxelKind* self, libvoxelcorematerialsMaterialKind* value);
 };
 
-struct _libvoxelcorevoxel_modelSimpleVoxel {
+struct _libvoxelcorevoxel_modelVoxel {
 	GObject parent_instance;
-	libvoxelcorevoxel_modelSimpleVoxelPrivate * priv;
+	libvoxelcorevoxel_modelVoxelPrivate * priv;
 };
 
-struct _libvoxelcorevoxel_modelSimpleVoxelClass {
+struct _libvoxelcorevoxel_modelVoxelClass {
 	GObjectClass parent_class;
 };
 
-struct _libvoxelcorevoxel_modelSimpleVoxelPrivate {
+struct _libvoxelcorevoxel_modelVoxelPrivate {
 	libvoxelcorematerialsMaterialKind* _material;
 };
 
 
-static gpointer libvoxelcore_voxel_model_simple_voxel_parent_class = NULL;
-static libvoxelcorevoxel_modelVoxelKindIface* libvoxelcore_voxel_model_simple_voxel_libvoxelcore_voxel_model_voxel_kind_parent_iface = NULL;
+static gpointer libvoxelcore_voxel_model_voxel_parent_class = NULL;
+static libvoxelcorevoxel_modelVoxelKindIface* libvoxelcore_voxel_model_voxel_libvoxelcore_voxel_model_voxel_kind_parent_iface = NULL;
 
 GType libvoxelcore_materials_material_kind_get_type (void) G_GNUC_CONST;
 GType libvoxelcore_voxel_model_voxel_kind_get_type (void) G_GNUC_CONST;
-GType libvoxelcore_voxel_model_simple_voxel_get_type (void) G_GNUC_CONST;
-#define LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), LIBVOXELCORE_VOXEL_MODEL_TYPE_SIMPLE_VOXEL, libvoxelcorevoxel_modelSimpleVoxelPrivate))
+GType libvoxelcore_voxel_model_voxel_get_type (void) G_GNUC_CONST;
+#define LIBVOXELCORE_VOXEL_MODEL_VOXEL_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL, libvoxelcorevoxel_modelVoxelPrivate))
 enum  {
-	LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL_DUMMY_PROPERTY,
-	LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL_MATERIAL
+	LIBVOXELCORE_VOXEL_MODEL_VOXEL_DUMMY_PROPERTY,
+	LIBVOXELCORE_VOXEL_MODEL_VOXEL_MATERIAL
 };
-libvoxelcorevoxel_modelSimpleVoxel* libvoxelcore_voxel_model_simple_voxel_new (void);
-libvoxelcorevoxel_modelSimpleVoxel* libvoxelcore_voxel_model_simple_voxel_construct (GType object_type);
-static void libvoxelcore_voxel_model_simple_voxel_finalize (GObject* obj);
+libvoxelcorevoxel_modelVoxel* libvoxelcore_voxel_model_voxel_new (void);
+libvoxelcorevoxel_modelVoxel* libvoxelcore_voxel_model_voxel_construct (GType object_type);
+static void libvoxelcore_voxel_model_voxel_finalize (GObject* obj);
 libvoxelcorematerialsMaterialKind* libvoxelcore_voxel_model_voxel_kind_get_material (libvoxelcorevoxel_modelVoxelKind* self);
-static void _vala_libvoxelcore_voxel_model_simple_voxel_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void _vala_libvoxelcore_voxel_model_voxel_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 void libvoxelcore_voxel_model_voxel_kind_set_material (libvoxelcorevoxel_modelVoxelKind* self, libvoxelcorematerialsMaterialKind* value);
-static void _vala_libvoxelcore_voxel_model_simple_voxel_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+static void _vala_libvoxelcore_voxel_model_voxel_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 
 
-libvoxelcorevoxel_modelSimpleVoxel* libvoxelcore_voxel_model_simple_voxel_construct (GType object_type) {
-	libvoxelcorevoxel_modelSimpleVoxel * self = NULL;
+libvoxelcorevoxel_modelVoxel* libvoxelcore_voxel_model_voxel_construct (GType object_type) {
+	libvoxelcorevoxel_modelVoxel * self = NULL;
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	self = (libvoxelcorevoxel_modelSimpleVoxel*) g_object_new (object_type, NULL);
+	self = (libvoxelcorevoxel_modelVoxel*) g_object_new (object_type, NULL);
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
 	return self;
 #line 108 "voxel.c"
 }
 
 
-libvoxelcorevoxel_modelSimpleVoxel* libvoxelcore_voxel_model_simple_voxel_new (void) {
+libvoxelcorevoxel_modelVoxel* libvoxelcore_voxel_model_voxel_new (void) {
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	return libvoxelcore_voxel_model_simple_voxel_construct (LIBVOXELCORE_VOXEL_MODEL_TYPE_SIMPLE_VOXEL);
+	return libvoxelcore_voxel_model_voxel_construct (LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL);
 #line 115 "voxel.c"
 }
 
 
-static libvoxelcorematerialsMaterialKind* libvoxelcore_voxel_model_simple_voxel_real_get_material (libvoxelcorevoxel_modelVoxelKind* base) {
+static libvoxelcorematerialsMaterialKind* libvoxelcore_voxel_model_voxel_real_get_material (libvoxelcorevoxel_modelVoxelKind* base) {
 	libvoxelcorematerialsMaterialKind* result;
-	libvoxelcorevoxel_modelSimpleVoxel* self;
+	libvoxelcorevoxel_modelVoxel* self;
 	libvoxelcorematerialsMaterialKind* _tmp0_;
 #line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	self = (libvoxelcorevoxel_modelSimpleVoxel*) base;
+	self = (libvoxelcorevoxel_modelVoxel*) base;
 #line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
 	_tmp0_ = self->priv->_material;
 #line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
@@ -138,12 +138,12 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-static void libvoxelcore_voxel_model_simple_voxel_real_set_material (libvoxelcorevoxel_modelVoxelKind* base, libvoxelcorematerialsMaterialKind* value) {
-	libvoxelcorevoxel_modelSimpleVoxel* self;
+static void libvoxelcore_voxel_model_voxel_real_set_material (libvoxelcorevoxel_modelVoxelKind* base, libvoxelcorematerialsMaterialKind* value) {
+	libvoxelcorevoxel_modelVoxel* self;
 	libvoxelcorematerialsMaterialKind* _tmp0_;
 	libvoxelcorematerialsMaterialKind* _tmp1_;
 #line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	self = (libvoxelcorevoxel_modelSimpleVoxel*) base;
+	self = (libvoxelcorevoxel_modelVoxel*) base;
 #line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
 	_tmp0_ = value;
 #line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
@@ -158,74 +158,74 @@ static void libvoxelcore_voxel_model_simple_voxel_real_set_material (libvoxelcor
 }
 
 
-static void libvoxelcore_voxel_model_simple_voxel_class_init (libvoxelcorevoxel_modelSimpleVoxelClass * klass) {
+static void libvoxelcore_voxel_model_voxel_class_init (libvoxelcorevoxel_modelVoxelClass * klass) {
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	libvoxelcore_voxel_model_simple_voxel_parent_class = g_type_class_peek_parent (klass);
+	libvoxelcore_voxel_model_voxel_parent_class = g_type_class_peek_parent (klass);
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	g_type_class_add_private (klass, sizeof (libvoxelcorevoxel_modelSimpleVoxelPrivate));
+	g_type_class_add_private (klass, sizeof (libvoxelcorevoxel_modelVoxelPrivate));
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	G_OBJECT_CLASS (klass)->get_property = _vala_libvoxelcore_voxel_model_simple_voxel_get_property;
+	G_OBJECT_CLASS (klass)->get_property = _vala_libvoxelcore_voxel_model_voxel_get_property;
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	G_OBJECT_CLASS (klass)->set_property = _vala_libvoxelcore_voxel_model_simple_voxel_set_property;
+	G_OBJECT_CLASS (klass)->set_property = _vala_libvoxelcore_voxel_model_voxel_set_property;
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	G_OBJECT_CLASS (klass)->finalize = libvoxelcore_voxel_model_simple_voxel_finalize;
+	G_OBJECT_CLASS (klass)->finalize = libvoxelcore_voxel_model_voxel_finalize;
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL_MATERIAL, g_param_spec_object ("material", "material", "material", LIBVOXELCORE_MATERIALS_TYPE_MATERIAL_KIND, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), LIBVOXELCORE_VOXEL_MODEL_VOXEL_MATERIAL, g_param_spec_object ("material", "material", "material", LIBVOXELCORE_MATERIALS_TYPE_MATERIAL_KIND, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 #line 175 "voxel.c"
 }
 
 
-static void libvoxelcore_voxel_model_simple_voxel_libvoxelcore_voxel_model_voxel_kind_interface_init (libvoxelcorevoxel_modelVoxelKindIface * iface) {
+static void libvoxelcore_voxel_model_voxel_libvoxelcore_voxel_model_voxel_kind_interface_init (libvoxelcorevoxel_modelVoxelKindIface * iface) {
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	libvoxelcore_voxel_model_simple_voxel_libvoxelcore_voxel_model_voxel_kind_parent_iface = g_type_interface_peek_parent (iface);
+	libvoxelcore_voxel_model_voxel_libvoxelcore_voxel_model_voxel_kind_parent_iface = g_type_interface_peek_parent (iface);
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	iface->get_material = libvoxelcore_voxel_model_simple_voxel_real_get_material;
+	iface->get_material = libvoxelcore_voxel_model_voxel_real_get_material;
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	iface->set_material = libvoxelcore_voxel_model_simple_voxel_real_set_material;
+	iface->set_material = libvoxelcore_voxel_model_voxel_real_set_material;
 #line 186 "voxel.c"
 }
 
 
-static void libvoxelcore_voxel_model_simple_voxel_instance_init (libvoxelcorevoxel_modelSimpleVoxel * self) {
+static void libvoxelcore_voxel_model_voxel_instance_init (libvoxelcorevoxel_modelVoxel * self) {
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	self->priv = LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL_GET_PRIVATE (self);
+	self->priv = LIBVOXELCORE_VOXEL_MODEL_VOXEL_GET_PRIVATE (self);
 #line 193 "voxel.c"
 }
 
 
-static void libvoxelcore_voxel_model_simple_voxel_finalize (GObject* obj) {
-	libvoxelcorevoxel_modelSimpleVoxel * self;
+static void libvoxelcore_voxel_model_voxel_finalize (GObject* obj) {
+	libvoxelcorevoxel_modelVoxel * self;
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	self = LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL (obj);
+	self = LIBVOXELCORE_VOXEL_MODEL_VOXEL (obj);
 #line 30 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
 	_g_object_unref0 (self->priv->_material);
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-	G_OBJECT_CLASS (libvoxelcore_voxel_model_simple_voxel_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (libvoxelcore_voxel_model_voxel_parent_class)->finalize (obj);
 #line 205 "voxel.c"
 }
 
 
-GType libvoxelcore_voxel_model_simple_voxel_get_type (void) {
-	static volatile gsize libvoxelcore_voxel_model_simple_voxel_type_id__volatile = 0;
-	if (g_once_init_enter (&libvoxelcore_voxel_model_simple_voxel_type_id__volatile)) {
-		static const GTypeInfo g_define_type_info = { sizeof (libvoxelcorevoxel_modelSimpleVoxelClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) libvoxelcore_voxel_model_simple_voxel_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (libvoxelcorevoxel_modelSimpleVoxel), 0, (GInstanceInitFunc) libvoxelcore_voxel_model_simple_voxel_instance_init, NULL };
-		static const GInterfaceInfo libvoxelcore_voxel_model_voxel_kind_info = { (GInterfaceInitFunc) libvoxelcore_voxel_model_simple_voxel_libvoxelcore_voxel_model_voxel_kind_interface_init, (GInterfaceFinalizeFunc) NULL, NULL};
-		GType libvoxelcore_voxel_model_simple_voxel_type_id;
-		libvoxelcore_voxel_model_simple_voxel_type_id = g_type_register_static (G_TYPE_OBJECT, "libvoxelcorevoxel_modelSimpleVoxel", &g_define_type_info, 0);
-		g_type_add_interface_static (libvoxelcore_voxel_model_simple_voxel_type_id, LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL_KIND, &libvoxelcore_voxel_model_voxel_kind_info);
-		g_once_init_leave (&libvoxelcore_voxel_model_simple_voxel_type_id__volatile, libvoxelcore_voxel_model_simple_voxel_type_id);
+GType libvoxelcore_voxel_model_voxel_get_type (void) {
+	static volatile gsize libvoxelcore_voxel_model_voxel_type_id__volatile = 0;
+	if (g_once_init_enter (&libvoxelcore_voxel_model_voxel_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (libvoxelcorevoxel_modelVoxelClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) libvoxelcore_voxel_model_voxel_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (libvoxelcorevoxel_modelVoxel), 0, (GInstanceInitFunc) libvoxelcore_voxel_model_voxel_instance_init, NULL };
+		static const GInterfaceInfo libvoxelcore_voxel_model_voxel_kind_info = { (GInterfaceInitFunc) libvoxelcore_voxel_model_voxel_libvoxelcore_voxel_model_voxel_kind_interface_init, (GInterfaceFinalizeFunc) NULL, NULL};
+		GType libvoxelcore_voxel_model_voxel_type_id;
+		libvoxelcore_voxel_model_voxel_type_id = g_type_register_static (G_TYPE_OBJECT, "libvoxelcorevoxel_modelVoxel", &g_define_type_info, 0);
+		g_type_add_interface_static (libvoxelcore_voxel_model_voxel_type_id, LIBVOXELCORE_VOXEL_MODEL_TYPE_VOXEL_KIND, &libvoxelcore_voxel_model_voxel_kind_info);
+		g_once_init_leave (&libvoxelcore_voxel_model_voxel_type_id__volatile, libvoxelcore_voxel_model_voxel_type_id);
 	}
-	return libvoxelcore_voxel_model_simple_voxel_type_id__volatile;
+	return libvoxelcore_voxel_model_voxel_type_id__volatile;
 }
 
 
-static void _vala_libvoxelcore_voxel_model_simple_voxel_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
-	libvoxelcorevoxel_modelSimpleVoxel * self;
-	self = LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL (object);
+static void _vala_libvoxelcore_voxel_model_voxel_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+	libvoxelcorevoxel_modelVoxel * self;
+	self = LIBVOXELCORE_VOXEL_MODEL_VOXEL (object);
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
 	switch (property_id) {
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-		case LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL_MATERIAL:
+		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MATERIAL:
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
 		g_value_set_object (value, libvoxelcore_voxel_model_voxel_kind_get_material ((libvoxelcorevoxel_modelVoxelKind*) self));
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
@@ -241,13 +241,13 @@ static void _vala_libvoxelcore_voxel_model_simple_voxel_get_property (GObject * 
 }
 
 
-static void _vala_libvoxelcore_voxel_model_simple_voxel_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
-	libvoxelcorevoxel_modelSimpleVoxel * self;
-	self = LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL (object);
+static void _vala_libvoxelcore_voxel_model_voxel_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+	libvoxelcorevoxel_modelVoxel * self;
+	self = LIBVOXELCORE_VOXEL_MODEL_VOXEL (object);
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
 	switch (property_id) {
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
-		case LIBVOXELCORE_VOXEL_MODEL_SIMPLE_VOXEL_MATERIAL:
+		case LIBVOXELCORE_VOXEL_MODEL_VOXEL_MATERIAL:
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"
 		libvoxelcore_voxel_model_voxel_kind_set_material ((libvoxelcorevoxel_modelVoxelKind*) self, g_value_get_object (value));
 #line 29 "/home/aeva/science/voxelpress/libvoxelcore/voxel_models/voxel.vala"

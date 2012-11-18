@@ -1,6 +1,8 @@
 
 
 using libvoxelcore.voxel_model;
+using libvoxelcore.vector_model;
+using libvoxelcore.loaders;
 
 
 bool print_layer(VoxelModel model, int z) {
@@ -44,28 +46,44 @@ int main(string[] args) {
 	var model = new VoxelModel(build_width, build_length, build_height,
 						   xy_res, z_res);
 
-	model[0, 0, 0] = new SimpleVoxel();
+
+	var vec_test = new VectorModel();
+	vec_test.on_face_created.connect((face) => {
+			stdout.printf("... A face was added to the vector model\n");
+		});
+
+	var vert1 = new Vertex(1, 0, 0, null);
+	var vert2 = new Vertex(0, 1, 0, null);
+	var vert3 = new Vertex(0, 0, 1, null);
+
+
+	stdout.printf("debug derp\n");
+	vec_test.add_tri(vert1, vert2, vert3);
+
+
+
+	model[0, 0, 0] = new Voxel();
 	for (int i=-5; i<=5; i+=1) {
-		model[0, -i, i] = new SimpleVoxel();
-		model[-i, 0, i] = new SimpleVoxel();
-		model[0, i, i] = new SimpleVoxel();
-		model[i, 0, i] = new SimpleVoxel();		
+		model[0, -i, i] = new Voxel();
+		model[-i, 0, i] = new Voxel();
+		model[0, i, i] = new Voxel();
+		model[i, 0, i] = new Voxel();		
 	}
 
-	model[8, 8, 0] = new SimpleVoxel();
-	model[7, 8, 0] = new SimpleVoxel();
-	model[6, 7, 0] = new SimpleVoxel();
-	model[5, 7, 0] = new SimpleVoxel();
-	model[4, 6, 0] = new SimpleVoxel();
-	model[3, 6, 0] = new SimpleVoxel();
-	model[2, 5, 0] = new SimpleVoxel();
-	model[1, 5, 0] = new SimpleVoxel();
-	model[0, 4, 0] = new SimpleVoxel();
-	model[-1, 4, 0] = new SimpleVoxel();
-	model[-2, 3, 0] = new SimpleVoxel();
-	model[-3, 3, 0] = new SimpleVoxel();
-	model[-4, 2, 0] = new SimpleVoxel();
-	model[-5, 2, 0] = new SimpleVoxel();
+	model[8, 8, 0] = new Voxel();
+	model[7, 8, 0] = new Voxel();
+	model[6, 7, 0] = new Voxel();
+	model[5, 7, 0] = new Voxel();
+	model[4, 6, 0] = new Voxel();
+	model[3, 6, 0] = new Voxel();
+	model[2, 5, 0] = new Voxel();
+	model[1, 5, 0] = new Voxel();
+	model[0, 4, 0] = new Voxel();
+	model[-1, 4, 0] = new Voxel();
+	model[-2, 3, 0] = new Voxel();
+	model[-3, 3, 0] = new Voxel();
+	model[-4, 2, 0] = new Voxel();
+	model[-5, 2, 0] = new Voxel();
 
 
 

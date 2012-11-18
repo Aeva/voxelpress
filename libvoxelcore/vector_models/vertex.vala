@@ -31,6 +31,13 @@ namespace libvoxelcore.vector_model {
 		public double y { get; set; }
 		public double z { get; set; }
 		public MaterialKind? material { get; set; }
+
+		public Vertex(double x, double y, double z, MaterialKind? material) {
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.material = material;
+		}
 	}
 
 

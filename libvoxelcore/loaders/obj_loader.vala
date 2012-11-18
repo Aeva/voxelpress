@@ -27,4 +27,7 @@ using libvoxelcore.vector_model;
 namespace libvoxelcore.loaders {
 
 
+	public class ObjModelLoader: VectorModel, ModelLoaderKind {
+	}
+
 }

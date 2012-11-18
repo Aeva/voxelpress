@@ -18,6 +18,7 @@ LIBVPRESS_SRC = materials/interfaces.vala \
 		vector_models/interfaces.vala \
 		vector_models/vertex.vala \
 		vector_models/face.vala \
+		vector_models/vector_model.vala \
 		voxel_models/interfaces.vala \
 		voxel_models/raster_layer.vala \
 		voxel_models/data_block.vala \

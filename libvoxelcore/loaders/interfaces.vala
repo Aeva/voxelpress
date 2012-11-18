@@ -27,7 +27,7 @@ namespace libvoxelcore.loaders {
 
 	
 	public interface ModelLoaderKind: Object {
-		public abstract signal void face_created(Face face);
+		public abstract signal void on_face_created(Face face);
 	}
 
 

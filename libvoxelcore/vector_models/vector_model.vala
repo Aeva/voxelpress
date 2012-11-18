@@ -27,21 +27,28 @@ using libvoxelcore.materials;
 namespace libvoxelcore.vector_model {
 
 
-	public interface VertexKind: Object {
-		public abstract double x { get; set; }
-		public abstract double y { get; set; }
-		public abstract double z { get; set; }
-		public abstract MaterialKind? material { get; set; }
-	}
+	public class VectorModel: Object, VectorModelKind {
+		public ArrayList<FaceKind> faces { get; set; }
+		public signal void on_face_created(FaceKind face);
 
 
-	public interface FaceKind: Object {
-		public abstract VertexKind[] vertices { get; set; }
-	}
+		public void add_tri(VertexKind v1, VertexKind v2, VertexKind v3) {
+			var face = new Face(v1, v2, v3);
+			faces.add(face);
+			on_face_created(face);
+		}
 
 
-	public interface VectorModelKind: Object {
-		public abstract ArrayList<FaceKind> faces { get; set; }
+		public void add_quad(VertexKind v1, VertexKind v2, VertexKind v3, VertexKind v4) {
+			// this ... might work?
+			add_tri(v1, v2, v3);
+			add_tri(v3, v4, v1);
+		}
+
+	   
+		public VectorModel() {
+			faces = new ArrayList<FaceKind>();
+		}
 	}
 
 

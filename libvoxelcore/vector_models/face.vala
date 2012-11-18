@@ -28,6 +28,10 @@ namespace libvoxelcore.vector_model {
 
 	public class Face: Object, FaceKind {
 		public VertexKind[] vertices { get; set; }
+
+		public Face(VertexKind v1, VertexKind v2, VertexKind v3) {
+			vertices = {v1, v2, v3};
+		}
 	}
 
 
