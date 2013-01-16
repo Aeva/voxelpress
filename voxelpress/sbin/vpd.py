@@ -32,11 +32,7 @@ import gobject
 import dbus, dbus.service
 from dbus.mainloop.glib import DBusGMainLoop
 
-try:
-    from udev import HardwareMonitor
-except ImportError:
-    raise
-
+from hw_detect import HardwareMonitor
 from printer_kind import VoxelpressPrinter, PRINTER_STATES
 
 

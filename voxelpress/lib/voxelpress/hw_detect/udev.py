@@ -25,9 +25,12 @@ import json
 import subprocess
 import gudev
 import dbus
+from hardware_kind import HardwareMonitorKind
 
 
-class HardwareMonitor:
+class HardwareMonitor(HardwareMonitorKind):
+    """This class implements the hardware monitor for systems in which
+    udev is available.  Presumably that means just Linux."""
 
     def __init__(self):
         self.__udev = gudev.Client(["tty", "usb/usb_device"])
