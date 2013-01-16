@@ -20,7 +20,8 @@
 
 import os
 import sys
-sys.path.insert(1, os.path.abspath(os.path.join(sys.argv[0], "../../lib/voxelpress")))
+sys.path.insert(
+    1, os.path.abspath(os.path.join(sys.argv[0], "../../../vpd/vpd")))
 
 import argparse
 import json
