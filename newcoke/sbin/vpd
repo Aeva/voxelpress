@@ -25,3 +25,4 @@ sys.path.insert(
 
 
 from vpd import main
+main.main()
