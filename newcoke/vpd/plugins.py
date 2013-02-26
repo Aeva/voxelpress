@@ -45,6 +45,14 @@ class PluginKind:
         """Invokes a script from the plugin's manifest."""
         
         script = os.path.join(self.__path, self.__manifest[component])
+        common = os.path.abspath(os.path.split(self.__path)[0])
+        if not env:
+            env = {}
+        if not os.environ.has_key("PYTHONPATH"):
+            env["PYTHONPATH"] = common
+        else:
+            env["PYTHONPATH"] = common + ":" + os.environ["PYTHONPATH"]
+        env["PLUGIN_PATH"] = self.__path
         util.spawn(script, args, env)
 
 

@@ -34,7 +34,7 @@ class Switchboard(dbus.service.Object):
         dbus.service.Object.__init__(self, bus_name, "/org/voxelpress")
         
         def launch_daemon(plugin):
-            base_path = "/org/voxelpress/daemons/backends/"
+            base_path = "/org/voxelpress/backends/"
             bus_path = base_path + plugin.name
             bus_path = bus_path.replace(".", "_")
             plugin.invoke("daemon", env={
@@ -46,8 +46,14 @@ class Switchboard(dbus.service.Object):
         self.plugins = find_plugins()
         map(launch_daemon, self.plugins["backends"])
         map(launch_daemon, self.plugins["drivers"])
-        
+
+
+    @dbus.service.method("org.voxelpress.debug", in_signature='ss')
+    def debug_log(self, component, message):
+        print "{0} says: {1}".format(component, message)
+
 
     @dbus.service.method("org.voxelpress.events", in_signature='s')
     def on_connect(self, device_info):
         print "some event"
+
