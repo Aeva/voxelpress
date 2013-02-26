@@ -18,11 +18,15 @@
 # Have a nice day!
 
 
-import os
-import sys
-sys.path.insert(
-    1, os.path.abspath(os.path.join(sys.argv[0], "../../")))
+import gobject
+from dbus.mainloop.glib import DBusGMainLoop
+from switchboard import Switchboard
 
 
-from vpd import main
-main.main("session")
+
+def main(dbus_mode):
+    main_loop = gobject.MainLoop()
+    DBusGMainLoop(set_as_default=True)
+    Switchboard(dbus_mode)
+    main_loop.run()
+

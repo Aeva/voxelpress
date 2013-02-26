@@ -18,11 +18,4 @@
 # Have a nice day!
 
 
-import os
-import sys
-sys.path.insert(
-    1, os.path.abspath(os.path.join(sys.argv[0], "../../")))
-
-
-from vpd import main
-main.main("session")
+import pdb; pdb.set_trace()

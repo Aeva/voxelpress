@@ -19,10 +19,13 @@
 
 
 import os
-import sys
-sys.path.insert(
-    1, os.path.abspath(os.path.join(sys.argv[0], "../../")))
+import subprocess
 
 
-from vpd import main
-main.main("session")
+def spawn(component, args=[], env=None):
+    """Opens a script in a separate process."""
+    target = os.path.join(os.path.split(__file__)[0], component)
+    assert os.path.exists(target)
+    _args = ["python", target] + map(str, list(args))
+    _cwd = os.path.split(target)[0]
+    subprocess.Popen(_args, cwd=_cwd)

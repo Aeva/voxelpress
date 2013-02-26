@@ -1,0 +1,5 @@
+
+
+Dependencies:
+ * python-gobject
+ * python-dbus
