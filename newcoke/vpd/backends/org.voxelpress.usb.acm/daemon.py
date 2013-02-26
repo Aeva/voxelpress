@@ -18,4 +18,29 @@
 # Have a nice day!
 
 
-import pdb; pdb.set_trace()
+import os
+import gobject
+import dbus, dbus.service
+from dbus.mainloop.glib import DBusGMainLoop
+
+
+class Switchboard(dbus.service.Object):
+    """Handler for dbus events, and is responsible for routing
+    requests to different components of the server."""
+
+    def __init__(self, dbus_mode):
+        bus = dbus.SessionBus() if dbus_mode=="session" else dbus.SystemBus()    
+        bus_name = dbus.service.BusName(os.environ["BUS_NAME"], bus=bus)
+        bus_path = os.environ["BUS_PATH"] 
+        dbus.service.Object.__init__(self, bus_name, bus_path)
+
+        print "Started daemon:", bus_path
+
+
+
+if __name__ == "__main__":
+    main_loop = gobject.MainLoop()
+    DBusGMainLoop(set_as_default=True)
+    Switchboard(os.environ["BUS_MODE"])
+    main_loop.run()
+

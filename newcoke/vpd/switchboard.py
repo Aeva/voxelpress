@@ -34,7 +34,14 @@ class Switchboard(dbus.service.Object):
         dbus.service.Object.__init__(self, bus_name, "/org/voxelpress")
         
         def launch_daemon(plugin):
-            plugin.invoke("daemon")
+            base_path = "/org/voxelpress/daemons/backends/"
+            bus_path = base_path + plugin.name
+            bus_path = bus_path.replace(".", "_")
+            plugin.invoke("daemon", env={
+                    "BUS_MODE" : dbus_mode,
+                    "BUS_NAME" : "org.voxelpress",
+                    "BUS_PATH" : bus_path,
+                    })
 
         self.plugins = find_plugins()
         map(launch_daemon, self.plugins["backends"])

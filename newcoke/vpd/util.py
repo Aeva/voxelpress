@@ -28,4 +28,12 @@ def spawn(component, args=[], env=None):
     assert os.path.exists(target)
     _args = ["python", target] + map(str, list(args))
     _cwd = os.path.split(target)[0]
-    subprocess.Popen(_args, cwd=_cwd)
+
+    _env = None
+    if env:
+        _env = {}
+        for ctx in (os.environ, env):
+            for key, value in ctx.items():
+                _env[key] = value
+
+    subprocess.Popen(_args, cwd=_cwd, env=_env)
