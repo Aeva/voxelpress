@@ -37,15 +37,10 @@ class SerialDevice(BackendDevice):
 
 
     def disconnect_handler(self, event_info):
-
         if event_info["listener"] == "udev":
             if event_info["usb_path"] == self.device_id:
                 log("Device Disconnected.")
                 self.shutdown()
-
-
-        log("Disconnect event?")
-        pass
 
 
 if __name__ == "__main__":

@@ -111,7 +111,6 @@ class BackendComponent(dbus.service.Object):
 
     def shutdown(self):
         self.__main_loop.quit()
-        exit(0)
         
     def spinoff(self, args=[], env=None, component="device"):
         """Start a subprocess."""
